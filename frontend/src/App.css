@@ -18,4 +18,6 @@
   width: 500px;
   height: 100px;
   background-color: green;
+  display: flex;
+  flex-direction: row;
 }
