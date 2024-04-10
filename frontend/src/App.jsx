@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5001', {
+  withCredentials: true,
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  },
+  transports: ["websocket"]
+});
 
 function DraggableBox({card_id}) {
   const [isDragging, setIsDragging] = useState(false);
