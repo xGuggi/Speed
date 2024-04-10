@@ -10,6 +10,54 @@ const io = socketio(server);
 dotenv.config();
 const port = process.env.PORT || 5001;
 
+let playerOneStash = [];
+let playerTwoStash = [];
+let playerOneHand = [];
+let playerTwoHand = [];
+let leftDeck = [];
+let rightDeck = [];
+let leftDisregard = [];
+let rightDisregard = [];
+let usedIndexes = [];
+let rando;
+let playerOne = '';
+let playerTwo = '';
+
+
+function shuffle(event){
+  
+  rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
+  usedIndexes.push(rando);
+  for (let i = 0; i < usedIndexes; i++)
+  {
+    if (usedIndexes[i] === rando)
+    {
+      continue;
+    }
+    else 
+    {
+      playerOneStash[rando] = event.card_id;
+    }
+  }
+}
+
+function Initialshuffle(event){
+  
+  rando = Math.floor(Math.random() * (52 - 1 + 1)) + 0;
+  usedIndexes.push(rando);
+  for (let i = 0; i < usedIndexes; i++)
+  {
+    if (usedIndexes[i] === rando)
+    {
+      continue;
+    }
+    else 
+    {
+      playerOneStash[rando] = event.card_id;
+    }
+  }
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -29,7 +77,16 @@ server.listen(port, () => {
 // Socket.IO
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
-  
+  if (playerOne = '')
+  {
+    playerOne = socket.id; 
+    io.emit('id', playerOne);
+  }
+  else 
+  {
+    playerTwo = socket.id;
+    io.emit('id', playerTwo); 
+  }
   socket.on('sendMessage', (message) => {
     console.log(message);
     io.emit('message', message);
