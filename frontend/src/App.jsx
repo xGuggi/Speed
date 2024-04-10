@@ -1,14 +1,45 @@
 import React, { useState } from 'react';
-import GameBoard from './components/CardPile';
+import GameBoard from './components/GameBoard';
 
 function App() {
-  // Example initial state for player's hand, central piles, and remaining cards
-  const [playerHand, setPlayerHand] = useState(['A', '2', '3', '4', '5']);
-  const [centralPiles, setCentralPiles] = useState([
-    ['6', '7', '8'],
-    ['9', '10', 'J'],
+  // Define initial state for player's hand, central piles, and remaining cards
+  const [playerHand, setPlayerHand] = useState([
+    { rank: 'A', suit: '♠' },
+    { rank: '2', suit: '♦' },
+    { rank: 'K', suit: '♣' },
+    // Add more cards as needed
   ]);
-  const [remainingCards, setRemainingCards] = useState(42);
+
+  const [centralPiles, setCentralPiles] = useState([
+    [
+      { rank: '5', suit: '♠' },
+      { rank: '6', suit: '♠' },
+      // Add more cards as needed
+    ],
+    [
+      { rank: 'Q', suit: '♦' },
+      { rank: 'K', suit: '♦' },
+      // Add more cards as needed
+    ],
+    // Add more piles as needed
+  ]);
+
+  const [remainingCards, setRemainingCards] = useState(52 - playerHand.length - centralPiles.flat().length);
+
+  // Function to handle playing a card
+  const handlePlayCard = () => {
+    // Implement logic to play a card
+  };
+
+  // Function to handle drawing a card
+  const handleDrawCard = () => {
+    // Implement logic to draw a card
+  };
+
+  // Function to handle declaring SPEED
+  const handleDeclareSpeed = () => {
+    // Implement logic to declare SPEED
+  };
 
   return (
     <div className="app-container">
@@ -18,6 +49,9 @@ function App() {
           playerHand={playerHand}
           centralPiles={centralPiles}
           remainingCards={remainingCards}
+          onPlayCard={handlePlayCard}
+          onDrawCard={handleDrawCard}
+          onDeclareSpeed={handleDeclareSpeed}
         />
         {/* Other components can be added here */}
       </div>
