@@ -1,144 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
+import CardPile from './components/CardPile.jsx'; // Make sure the path is correct
+import Hand from './components/Hand.jsx';
 
-function DraggableBox({card_id, onDrop}) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
+function App() {
+  const [cards, setCards] = useState([]);
 
-  const startDrag = (e) => {
-    // set the position to the mouse
-    setPosition({
-      x: e.clientX - 50, // Adjust based on element size to center
-      y: e.clientY - 50, // Adjust based on element size to center
-    });
-    // make the movement smooth
-    e.target.style.position = 'absolute';
-    setIsDragging(true);
-  };
+  const cardPileRef = useRef(); 
 
-  const onDragging = (e) => {
-    if (!isDragging) return;
-    setPosition({
-      x: e.clientX - 50, // Adjust based on element size to center
-      y: e.clientY - 50, // Adjust based on element size to center
-    });
-  };
-
-  const endDrag = (e) => {
-    setIsDragging(false);
-    if(onDrop(e, card_id) === "dropped") {
-      e.target.style.display = 'none';
-    };
+  const handleOnDrop = (e, card_id) => {
+    setCards([...cards, card_id]);
   };
 
   return (
-    <div
-      className="Card"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-      onMouseDown={startDrag}
-      onMouseMove={onDragging}
-      onMouseUp={endDrag}
-    >{card_id}</div>
-  );
-}
-
-function App() {
-  const [cards, setCards] = useState([])
-  const [cardData, setCardData] = useState();
-
-  // https://react.dev/reference/react/useRef
-  const cardPileRef = useRef(); // Reference to the drop target
-  
-  let playerOneStash = [];
-  let playerTwoStash = [];
-  let playerOneHand = [];
-  let playerTwoHand = [];
-  let leftDeck = [];
-  let rightDeck = [];
-  let leftDisregard = [];
-  let rightDisregard = [];
-  let usedIndexes = [];
-  let rando;
-
-
-  function shuffle(event){
-    
-    rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
-    usedIndexes.push(rando);
-    for (let i = 0; i < usedIndexes; i++)
-    {
-      if (usedIndexes[i] === rando)
-      {
-        continue;
-      }
-      else 
-      {
-        playerOneStash[rando] = event.card_id;
-      }
-    }
-  }
-
-  function Initialshuffle(event){
-    
-    rando = Math.floor(Math.random() * (52 - 1 + 1)) + 0;
-    usedIndexes.push(rando);
-    for (let i = 0; i < usedIndexes; i++)
-    {
-      if (usedIndexes[i] === rando)
-      {
-        continue;
-      }
-      else 
-      {
-        playerOneStash[rando] = event.card_id;
-      }
-    }
-  }
-
-
-
-
-
-
-  useEffect(() => {
-    // Update stickman or handle game over logic here
-  }, []);
-
-
-  const handleOnDrop = (e, card_id) => {
-    // Calculate if the drop is within the CardPile
-    const cardPileBounds = cardPileRef.current.getBoundingClientRect();
-    if (e.clientX >= cardPileBounds.left && e.clientX <= cardPileBounds.right &&
-        e.clientY >= cardPileBounds.top && e.clientY <= cardPileBounds.bottom) {
-      setCards([...cards, card_id]);
-      return "dropped";
-    }
-  };
-
-  return (  
-    
-    <div className="App"> 
-      <div className="Hand">
-        <DraggableBox card_id="aa" onDrop={handleOnDrop}/>
-      </div>
-
-      <div className='CardPile' ref={cardPileRef}>
-        {cards.map((card, index) => (
-          <div className='dropped-card' key={index}>
-              {card}
-          </div>
-        ))}
-      </div>
-
-      <div className="Hand">
-        <DraggableBox card_id="aa" onDrop={handleOnDrop}/>
-        <DraggableBox card_id="b" onDrop={handleOnDrop}/>
-        <DraggableBox card_id="c" onDrop={handleOnDrop}/>
-        <DraggableBox card_id="d" onDrop={handleOnDrop}/>
-      </div>
+    <div className="App">
+      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
+      <CardPile cards={cards} />
+      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
     </div>
   );
 }
