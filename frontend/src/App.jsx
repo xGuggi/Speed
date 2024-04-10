@@ -46,6 +46,28 @@ function App() {
   const [cards, setCards] = useState([])
   const [cardData, setCardData] = useState();
   
+  let playerOneStash = [];
+  let playerTwoStash = [];
+  let playerOneHand = [];
+  let playerTwoHand = [];
+  let leftDeck = [];
+  let rightDeck = [];
+  let left = [];
+  let right = [];
+
+
+
+  function shuffle(event){
+    rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
+    
+  }
+
+
+
+
+
+
+
   useEffect(() => {
     // Update stickman or handle game over logic here
   }, []);
