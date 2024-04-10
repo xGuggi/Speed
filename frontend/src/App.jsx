@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function DraggableBox(card_id) {
+function DraggableBox({card_id}) {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 50, y: 50 });
 
   const startDrag = (e) => {
-    // // put the data in the transfer pipe
-    // e.dataTransfer.setData("card_id", card_id);
-
-
     // set the position to the mouse
     setPosition({
       x: e.clientX - 50, // Adjust based on element size to center
@@ -42,8 +38,7 @@ function DraggableBox(card_id) {
       onMouseDown={startDrag}
       onMouseMove={onDragging}
       onMouseUp={endDrag}
-      onMouseLeave={endDrag}
-    ></div>
+    >{card_id}</div>
   );
 }
 
@@ -56,19 +51,17 @@ function App() {
   }, []);
 
   function HandleOnDrop(event) {
-    const card_id= event.dataTransfer.getData("card_id");
-    console.log("card_id: ", card_id)
     setCards([...cards, card_id]);
   }
 
-  return (
+  return (  
     
     <div className="App"> 
       <div className="Hand">
         <DraggableBox card_id="aa"/>
       </div>
 
-      <div className='CardPile' onDrop={HandleOnDrop}>
+      <div className='CardPile' onMouseUp={HandleOnDrop}>
         {cards.map((card, index) => (
           <div className='dropped-card' key={index}>
               {card}
