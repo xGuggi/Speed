@@ -1,7 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './App.css';
-import CardPile from './components/CardPile.jsx'; // Make sure the path is correct
-import Hand from './components/Hand.jsx';
+import React, { useState } from 'react';
+import GameBoard from './components/GameBoard';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:5001', {
@@ -13,50 +11,8 @@ const socket = io('http://localhost:5001', {
 });
 
 
-function DraggableBox({card_id}) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-
-
-  const startDrag = (e) => {
-    // set the position to the mouse
-    setPosition({
-      x: e.clientX - 50, // Adjust based on element size to center
-      y: e.clientY - 50, // Adjust based on element size to center
-    });
-    // make the movement smooth
-    e.target.style.position = 'absolute';
-    setIsDragging(true);
-  };
-
-  const onDragging = (e) => {
-    if (!isDragging) return;
-    setPosition({
-      x: e.clientX - 50, // Adjust based on element size to center
-      y: e.clientY - 50, // Adjust based on element size to center
-    });
-  };
-
-  const endDrag = () => {
-    setIsDragging(false);
-  };
-
-  return (
-    <div
-      className="Card"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-      onMouseDown={startDrag}
-      onMouseMove={onDragging}
-      onMouseUp={endDrag}
-    >{card_id}</div>
-  );
-}
-
 function App() {
-  const [cards, setCards] = useState([]);
+
   const [id, setId] = useState();
 
   useEffect(() => {
@@ -65,20 +21,61 @@ function App() {
       console.log(id);
     });
   }, []);
-  
-  const cardPileRef = useRef(); 
 
-  const handleOnDrop = (e, card_id) => {
-    e.preventDefault;
-    socket.emit('sendMessage', {cards});
-    setCards([...cards, card_id]);
+  
+  // Define initial state for player's hand, central piles, and remaining cards
+  const [playerHand, setPlayerHand] = useState([
+    { rank: 'A', suit: '♠' },
+    { rank: '2', suit: '♦' },
+    { rank: 'K', suit: '♣' },
+    // Add more cards as needed
+  ]);
+
+  const [centralPiles, setCentralPiles] = useState([
+    [
+      { rank: '5', suit: '♠' },
+      { rank: '6', suit: '♠' },
+      // Add more cards as needed
+    ],
+    [
+      { rank: 'Q', suit: '♦' },
+      { rank: 'K', suit: '♦' },
+      // Add more cards as needed
+    ],
+    // Add more piles as needed
+  ]);
+
+  const [remainingCards, setRemainingCards] = useState(52 - playerHand.length - centralPiles.flat().length);
+
+  // Function to handle playing a card
+  const handlePlayCard = () => {
+    // Implement logic to play a card
+  };
+
+  // Function to handle drawing a card
+  const handleDrawCard = () => {
+    // Implement logic to draw a card
+  };
+
+  // Function to handle declaring SPEED
+  const handleDeclareSpeed = () => {
+    // Implement logic to declare SPEED
   };
 
   return (
-    <div className="App">
-      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
-      <CardPile cards={cards} />
-      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
+    <div className="app-container">
+      <h1>SPEED Game</h1>
+      <div className="game-container">
+        <GameBoard
+          playerHand={playerHand}
+          centralPiles={centralPiles}
+          remainingCards={remainingCards}
+          onPlayCard={handlePlayCard}
+          onDrawCard={handleDrawCard}
+          onDeclareSpeed={handleDeclareSpeed}
+        />
+        {/* Other components can be added here */}
+      </div>
     </div>
   );
 }
