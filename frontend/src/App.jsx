@@ -58,16 +58,45 @@ function App() {
   let playerTwoHand = [];
   let leftDeck = [];
   let rightDeck = [];
-  let left = [];
-  let right = [];
-
+  let leftDisregard = [];
+  let rightDisregard = [];
+  let usedIndexes = [];
+  let rando;
 
 
   function shuffle(event){
-    rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
     
+    rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
+    usedIndexes.push(rando);
+    for (let i = 0; i < usedIndexes; i++)
+    {
+      if (usedIndexes[i] === rando)
+      {
+        continue;
+      }
+      else 
+      {
+        playerOneStash[rando] = event.card_id;
+      }
+    }
   }
 
+  function Initialshuffle(event){
+    
+    rando = Math.floor(Math.random() * (52 - 1 + 1)) + 0;
+    usedIndexes.push(rando);
+    for (let i = 0; i < usedIndexes; i++)
+    {
+      if (usedIndexes[i] === rando)
+      {
+        continue;
+      }
+      else 
+      {
+        playerOneStash[rando] = event.card_id;
+      }
+    }
+  }
 
 
 
