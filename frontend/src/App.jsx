@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import GameBoard from './components/GameBoard';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5001', {
+  withCredentials: true,
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  },
+  transports: ["websocket"]
+});
 
 function App() {
   // Define initial state for player's hand, central piles, and remaining cards
