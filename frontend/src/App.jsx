@@ -12,9 +12,11 @@ const socket = io('http://localhost:5001', {
   transports: ["websocket"]
 });
 
+
 function DraggableBox({card_id}) {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 50, y: 50 });
+
 
   const startDrag = (e) => {
     // set the position to the mouse
@@ -55,11 +57,20 @@ function DraggableBox({card_id}) {
 
 function App() {
   const [cards, setCards] = useState([]);
+  const [id, setId] = useState();
 
- 
+  useEffect(() => {
+    socket.on('id', (id) => {
+      setId(id);
+      console.log(id);
+    });
+  }, []);
+  
   const cardPileRef = useRef(); 
 
   const handleOnDrop = (e, card_id) => {
+    e.preventDefault;
+    socket.emit('sendMessage', {cards});
     setCards([...cards, card_id]);
   };
 

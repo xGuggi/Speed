@@ -29,8 +29,9 @@ server.listen(port, () => {
 // Socket.IO
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
-
+  
   socket.on('sendMessage', (message) => {
+    console.log(message);
     io.emit('message', message);
   });
 //   socket.on('differentMessage', (message) => {
