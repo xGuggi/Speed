@@ -1,22 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './App.css';
-import CardPile from './components/CardPile.jsx'; // Make sure the path is correct
-import Hand from './components/Hand.jsx';
+import React, { useState } from 'react';
+import GameBoard from './components/CardPile';
 
 function App() {
-  const [cards, setCards] = useState([]);
-
-  const cardPileRef = useRef(); 
-
-  const handleOnDrop = (e, card_id) => {
-    setCards([...cards, card_id]);
-  };
+  // Example initial state for player's hand, central piles, and remaining cards
+  const [playerHand, setPlayerHand] = useState(['A', '2', '3', '4', '5']);
+  const [centralPiles, setCentralPiles] = useState([
+    ['6', '7', '8'],
+    ['9', '10', 'J'],
+  ]);
+  const [remainingCards, setRemainingCards] = useState(42);
 
   return (
-    <div className="App">
-      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
-      <CardPile cards={cards} />
-      <Hand card_ids={['a', 'b', 'c']} onDropFunc={handleOnDrop} />
+    <div className="app-container">
+      <h1>SPEED Game</h1>
+      <div className="game-container">
+        <GameBoard
+          playerHand={playerHand}
+          centralPiles={centralPiles}
+          remainingCards={remainingCards}
+        />
+        {/* Other components can be added here */}
+      </div>
     </div>
   );
 }

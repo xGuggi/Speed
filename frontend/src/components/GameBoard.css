@@ -1,0 +1,42 @@
+/* GameBoard.css */
+.game-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .player-hand, .central-piles, .remaining-cards {
+    margin-bottom: 20px;
+  }
+  
+  .cards {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .card {
+    width: 60px;
+    height: 90px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background-color: #fff;
+  }
+  
+  .piles {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pile {
+    margin-right: 20px;
+  }
+  
+  .remaining-cards p {
+    margin: 0;
+  }
+  
