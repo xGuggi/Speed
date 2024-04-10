@@ -5,7 +5,9 @@ const socketio = require('socket.io');
 
 const app = express();
 const server = require('http').Server(app);
-const io = socketio(server);
+const io = socketio(server, {
+  autoConnect: false
+});
 
 dotenv.config();
 const port = process.env.PORT || 5001;
@@ -76,6 +78,7 @@ server.listen(port, () => {
 
 // Socket.IO
 io.on('connection', (socket) => {
+
   console.log(`Socket ${socket.id} connected`);
   if (playerOne = '')
   {
