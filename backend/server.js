@@ -5,7 +5,9 @@ const socketio = require('socket.io');
 
 const app = express();
 const server = require('http').Server(app);
-const io = socketio(server);
+const io = socketio(server, {
+  autoConnect: false
+});
 
 dotenv.config();
 const port = process.env.PORT || 5001;
@@ -74,20 +76,32 @@ server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+
+io.on('connection', (socket) =>{
+socket.on('gameState', (fullDeck) =>{
+  console.log(fullDeck);
+});
+});
+
+
+
 // Socket.IO
 io.on('connection', (socket) => {
+
   console.log(`Socket ${socket.id} connected`);
-  if (playerOne = '')
+
+  if (playerOne === '')
   {
-    playerOne = socket.id; 
-    io.emit('id', playerOne);
+    playerOne = 'playerOne'; //setting player one
+    io.to(socket.id).emit('id', playerOne); 
   }
   else 
   {
-    playerTwo = socket.id;
-    io.emit('id', playerTwo); 
+    playerTwo = 'playerTwo'; //setting player two
+    io.to(socket.id).emit('id', playerTwo); 
   }
   socket.on('sendMessage', (message) => {
+    console.log(message);
     io.emit('message', message);
   });
 //   socket.on('differentMessage', (message) => {
@@ -96,5 +110,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected`);
+    playerOne = '';
+    playerTwo = '';
   });
 });
