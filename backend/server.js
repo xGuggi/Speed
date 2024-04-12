@@ -20,7 +20,7 @@ let leftDeck = [];
 let rightDeck = [];
 let leftDisregard = [];
 let rightDisregard = [];
-let usedIndexes = [];
+let usedIndexes = new Array(52);
 let rando;
 let playerOne = '';
 let playerTwo = '';
@@ -46,10 +46,12 @@ function shuffle(event){
 function Initialshuffle(event){
   
   rando = Math.floor(Math.random() * (51 - 0 + 1)) + 0;
-  usedIndexes.push(rando);
-  for (let i = 0; i < usedIndexes; i++)
+  usedIndexes[rando] = rando;
+  console.log("yoyo");
+
+  for (let i = 0; i < usedIndexes.length; i++)
   {
-    if (usedIndexes[i] === rando)
+    if (i === rando)
     {
       continue;
     }
