@@ -13,11 +13,11 @@ const socket = io('http://localhost:5001', {
 
 function App() {
 
-  const [id, setId] = useState();
+  const [name, setName] = useState();
 
   useEffect(() => {
     socket.on('id', (id) => {
-      setId(id);
+      setName(id);
       console.log(id);
     });
   }, []);

@@ -82,12 +82,12 @@ io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
   if (playerOne = '')
   {
-    playerOne = socket.id; 
-    io.emit('id', playerOne);
+    playerOne = 'playerOne'; //setting player one
+    io.emit('id', playerOne); 
   }
   else 
   {
-    playerTwo = socket.id;
+    playerTwo = 'playerTwo'; //setting player two
     io.emit('id', playerTwo); 
   }
   socket.on('sendMessage', (message) => {
