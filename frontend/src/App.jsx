@@ -15,23 +15,6 @@ function App() {
 
   const [name, setName] = useState();
 
-  useEffect(() => {
-    socket.on('id', (id) => {
-      setName(id);
-      console.log(id);
-    });
-  }, []);
-
-  
-  // Define initial state for player's hand, central piles, and remaining cards
-  const [playerHand, setPlayerHand] = useState([
-    { rank: 'A', suit: '♠' },
-    { rank: '2', suit: '♦' },
-    { rank: 'K', suit: '♣' },
-    //'♥'
-    // Add more cards as needed
-  ]);
-
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -90,6 +73,28 @@ function App() {
     { rank: 'A', suit: '♥' },
     // Add more cards as needed
   ]);
+
+  useEffect(() => {
+    socket.on('id', (id) => {
+      setName(id);
+      console.log(id); 
+    });
+    socket.emit('gameState', fullDeck);
+  }, []);
+
+  
+
+  
+  // Define initial state for player's hand, central piles, and remaining cards
+  const [playerHand, setPlayerHand] = useState([
+    { rank: 'A', suit: '♠' },
+    { rank: '2', suit: '♦' },
+    { rank: 'K', suit: '♣' },
+    
+    // Add more cards as needed
+  ]);
+
+  
 
 
   const [centralPiles, setCentralPiles] = useState([

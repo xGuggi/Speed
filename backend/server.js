@@ -77,11 +77,10 @@ server.listen(port, () => {
 });
 
 
-io.on('gameState', (socket) =>{
-
-
-
-
+io.on('connection', (socket) =>{
+socket.on('gameState', (fullDeck) =>{
+  console.log(fullDeck);
+});
 });
 
 
