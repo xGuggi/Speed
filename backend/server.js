@@ -90,7 +90,8 @@ io.on('gameState', (socket) =>{
 io.on('connection', (socket) => {
 
   console.log(`Socket ${socket.id} connected`);
-  if (playerOne = '')
+
+  if (playerOne === '')
   {
     playerOne = 'playerOne'; //setting player one
     io.to(socket.id).emit('id', playerOne); 
