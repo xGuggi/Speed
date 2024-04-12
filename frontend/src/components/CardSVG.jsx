@@ -1,14 +1,26 @@
-// CardSVG.js
 import React from 'react';
+import { useDrag, useDrop } from "react-dnd";
 
 const CardSVG = ({ rank, suit }) => {
+  const [{ isDragging }, drag] = useDrag({
+    item: {type: CardSVG, rank, suit },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
   return (
-    <svg
+    <Svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 150"
       width="60"
       height="90"
       className="card"
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'pointer',
+      }}
     >
       {/* Card outline */}
       <rect x="0" y="0" width="100" height="150" fill="none" stroke="black" strokeWidth="2" />
@@ -24,8 +36,9 @@ const CardSVG = ({ rank, suit }) => {
       <text x="75" y="145" fontSize="30" fill={suit === '♠' || suit === '♣' ? 'black' : 'red'}>
         {suit}
       </text>
-    </svg>
+    </Svg>
   );
 };
+
 
 export default CardSVG;

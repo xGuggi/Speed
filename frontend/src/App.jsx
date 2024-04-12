@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import GameBoard from './components/GameBoard';
 import io from 'socket.io-client';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import Svg from './components/CardSVG';
 
-const socket = io('http://localhost:5001', {
-  withCredentials: true,
-  extraHeaders: {
-    "my-custom-header": "abcd"
-  },
-  transports: ["websocket"]
-});
+// const socket = io('http://localhost:5001', {
+//   withCredentials: true,
+//   extraHeaders: {
+//     "my-custom-header": "abcd"
+//   },
+//   transports: ["websocket"]
+// });
 
 function App() {
   // Define initial state for player's hand, central piles, and remaining cards
@@ -54,6 +57,7 @@ function App() {
     <div className="app-container">
       <h1>SPEED Game</h1>
       <div className="game-container">
+      <DndProvider backend={HTML5Backend}>
         <GameBoard
           playerHand={playerHand}
           centralPiles={centralPiles}
@@ -62,9 +66,12 @@ function App() {
           onDrawCard={handleDrawCard}
           onDeclareSpeed={handleDeclareSpeed}
         />
-        {/* Other components can be added here */}
+        <Svg rank="A" suit="♠" />
+      </DndProvider>
+      {/* Other components can be added here */}
       </div>
     </div>
+    
   );
 }
 
