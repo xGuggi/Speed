@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameBoard from './components/GameBoard';
 import io from 'socket.io-client';
 
