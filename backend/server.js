@@ -11,7 +11,7 @@ const io = socketio(server, {
 
 dotenv.config();
 const port = process.env.PORT || 5001;
-
+let newFullDeck = [];
 let playerOneStash = [];
 let playerTwoStash = [];
 let playerOneHand = [];
@@ -45,7 +45,7 @@ function shuffle(event){
 
 function Initialshuffle(event){
   
-  rando = Math.floor(Math.random() * (52 - 1 + 1)) + 0;
+  rando = Math.floor(Math.random() * (51 - 0 + 1)) + 0;
   usedIndexes.push(rando);
   for (let i = 0; i < usedIndexes; i++)
   {
@@ -55,7 +55,7 @@ function Initialshuffle(event){
     }
     else 
     {
-      playerOneStash[rando] = event.card_id;
+      newFullDeck[rando] = event[i];
     }
   }
 }
@@ -80,6 +80,11 @@ server.listen(port, () => {
 io.on('connection', (socket) =>{
 socket.on('gameState', (fullDeck) =>{
   console.log(fullDeck);
+  Initialshuffle(fullDeck);
+  
+  console.log(newFullDeck);
+
+
 });
 });
 
