@@ -76,6 +76,16 @@ server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+
+io.on('gameState', (socket) =>{
+
+
+
+
+});
+
+
+
 // Socket.IO
 io.on('connection', (socket) => {
 
@@ -100,5 +110,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected`);
+    playerOne = '';
+    playerTwo = '';
   });
 });
