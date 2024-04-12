@@ -83,12 +83,12 @@ io.on('connection', (socket) => {
   if (playerOne = '')
   {
     playerOne = 'playerOne'; //setting player one
-    io.emit('id', playerOne); 
+    io.to(socket.id).emit('id', playerOne); 
   }
   else 
   {
     playerTwo = 'playerTwo'; //setting player two
-    io.emit('id', playerTwo); 
+    io.to(socket.id).emit('id', playerTwo); 
   }
   socket.on('sendMessage', (message) => {
     console.log(message);
