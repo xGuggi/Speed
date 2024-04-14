@@ -11,7 +11,6 @@ const io = socketio(server, {
 
 dotenv.config();
 const port = process.env.PORT || 5001;
-let newFullDeck = [];
 let playerOneStash = [];
 let playerTwoStash = [];
 let playerOneHand = [];
@@ -20,48 +19,77 @@ let leftDeck = [];
 let rightDeck = [];
 let leftDisregard = [];
 let rightDisregard = [];
-let usedIndexes = new Array(52);
-let rando;
 let playerOne = '';
 let playerTwo = '';
+let shuffledArray = [];
+let usedIndexes = [];
 
-
-function shuffle(event){
-  
-  rando = Math.floor(Math.random() * (14 - 0 + 1)) + 0;
-  usedIndexes.push(rando);
-  for (let i = 0; i < usedIndexes; i++)
-  {
-    if (usedIndexes[i] === rando)
-    {
-      continue;
-    }
-    else 
-    {
-      playerOneStash[rando] = event.card_id;
-    }
-  }
-}
 
 function Initialshuffle(event){
-  
-  rando = Math.floor(Math.random() * (51 - 0 + 1)) + 0;
-  usedIndexes[rando] = rando;
-  console.log("yoyo");
-
-  for (let i = 0; i < usedIndexes.length; i++)
-  {
-    if (i === rando)
-    {
-      continue;
-    }
-    else 
-    {
-      newFullDeck[rando] = event[i];
-    }
-  }
+  shuffledArray = [];
+  usedIndexes = [];
+  let i = 0; 
+  while (i < event.length) {
+      let rando = Math.floor(Math.random() * event.length);
+      if (!usedIndexes.includes(rando))
+      {
+        shuffledArray.push(event[rando]);
+        usedIndexes.push(rando);
+        i++;
+      }
+  }  
 }
 
+function playerOneDeck(event) {
+  playerOneStash = [];
+  for (let i = 0; i < 20; i++)
+  {
+    playerOneStash[i] = event[i];
+  }
+  console.log(playerOneStash);
+}
+
+function playerTwoDeck(event) {
+  playerOneStash = [];
+  let z = 0;
+  for (let i = 20; i < 40; i++)
+  {
+    if (i > 19)
+    {
+      playerTwoStash[z] = event[i];
+      z++;
+    }
+  }
+  console.log(playerTwoStash);
+}
+
+function leftCards(event) {
+  leftDeck = [];
+  let z = 0;
+  for (let i = 40; i < 46; i++)
+  {
+    if (i > 39)
+    {
+      leftDeck[z] = event[i];
+      z++;
+    }
+  }
+  console.log(leftDeck);
+}
+
+function rightCards(event) {
+  leftDeck = [];
+  let z = 0; 
+  for (let i = 46; i < 52; i++)
+  {
+    if (i > 45) 
+    {
+      rightDeck[z] = event[i];
+      z++;
+    }
+  }
+  console.log(rightDeck);
+}
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -83,10 +111,11 @@ io.on('connection', (socket) =>{
 socket.on('gameState', (fullDeck) =>{
   console.log(fullDeck);
   Initialshuffle(fullDeck);
-  
-  console.log(newFullDeck);
-
-
+  playerOneDeck(shuffledArray);
+  playerTwoDeck(shuffledArray);
+  leftCards(shuffledArray);
+  rightCards(shuffledArray);
+  console.log(shuffledArray);
 });
 });
 
