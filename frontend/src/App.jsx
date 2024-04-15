@@ -84,6 +84,40 @@ function App() {
   let rightDeck = [];
   ///////////////////logic////////////////////////
   function checkIfNone(event) {
+    let playerOneRank;
+    let playerTwoRank;
+    for (let i = 0; i < playerOneHand.length; i++)
+    {
+      if (playerOneHand[i].rank === 'A' || playerOneHand[i].rank === 'K' || playerOneHand[i].rank === 'Q' || playerOneHand[i].rank === 'J')
+      {
+        if (playerOneHand[i].rank === 'A')
+        {
+          playerOneRank = 14;
+        }
+        else if (playerOneHand[i].rank === 'K')
+        {
+          playerOneRank = 13;
+        }
+        else if (playerOneHand[i].rank === 'Q')
+        {
+          playerOneRank = 12;
+        }
+        else if (playerOneHand[i].rank === 'J')
+        {
+          playerOneRank = 11;
+        }
+      }  
+      playerOneRank = parseInt(playerOneHand[i].rank);
+      leftDisRank = parseInt(leftDisregard[0].rank);
+      rightDisRank = parseInt(rightDisregard[0].rank);
+      if ((playerOneRank === leftDisRank - 1) || (playerOneRank === leftDisRank + 1) || (playerOneRank === rightDisRank + 1) || (playerOneRank === rightDisRank - 1))
+      {
+        return true;
+      }
+      
+      
+      playerTwoRank = parseInt(playerTwoHand[i].rank);
+    }
     //check every position in the players array
     //if none of the positions are plus one or minus 1 to either the left or right than take one card from each of the middle piles.
   }
