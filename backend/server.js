@@ -116,6 +116,7 @@ socket.on('gameState', (fullDeck) =>{
   leftCards(shuffledArray);
   rightCards(shuffledArray);
   console.log(shuffledArray);
+  io.emit('cards', shuffledArray);
 });
 });
 

@@ -74,6 +74,112 @@ function App() {
     // Add more cards as needed
   ]);
 
+  let leftDisregard = [];
+  let rightDisregard = [];
+  let playerOneStash = [];
+  let playerTwoStash = [];
+  let playerOneHand = [];
+  let playerTwoHand = [];
+  let leftDeck = [];
+  let rightDeck = [];
+  ///////////////////logic////////////////////////
+  function checkIfNone(event) {
+    //check every position in the players array
+    //if none of the positions are plus one or minus 1 to either the left or right than take one card from each of the middle piles.
+  }
+  function popForOne(event){
+    z = 0;
+    for (let i = 0; i < playerOneStash.length; i++)
+    {
+      if (z > 4)
+      {
+        continue; 
+      }
+      else
+      {
+        z++;
+        playerOneHand[i] = playerOneStash[i];
+        playerOneStash.shift();
+      }
+    }
+  }
+
+  function popForTwo(event){
+    z = 0;
+    for (let i = 0; i < playerTwoStash.length; i++)
+    {
+      if (z > 4)
+      {
+        continue; 
+      }
+      else
+      {
+        z++;
+        playerTwoHand[i] = playerTwoStash[i];
+        playerOneStash.shift();
+      }
+    }
+  }
+
+  //check for none
+  //shuffle for out of side cards
+  //stalemate shuffle
+  ////////////////////////////////////////////////
+
+
+  //////////////////functions for seperating cards////////////////////////
+  function playerOneDeck(event) {
+    playerOneStash = [];
+    for (let i = 0; i < 20; i++)
+    {
+      playerOneStash[i] = event[i];
+    }
+    console.log(playerOneStash);
+  }
+  
+  function playerTwoDeck(event) {
+    playerOneStash = [];
+    let z = 0;
+    for (let i = 20; i < 40; i++)
+    {
+      if (i > 19)
+      {
+        playerTwoStash[z] = event[i];
+        z++;
+      }
+    }
+    console.log(playerTwoStash);
+  }
+  
+  function leftCards(event) {
+    leftDeck = [];
+    let z = 0;
+    for (let i = 40; i < 46; i++)
+    {
+      if (i > 39)
+      {
+        leftDeck[z] = event[i];
+        z++;
+      }
+    }
+    console.log(leftDeck);
+  }
+  
+  function rightCards(event) {
+    leftDeck = [];
+    let z = 0; 
+    for (let i = 46; i < 52; i++)
+    {
+      if (i > 45) 
+      {
+        rightDeck[z] = event[i];
+        z++;
+      }
+    }
+    console.log(rightDeck);
+  }
+  ///////////////////////////////////////////////////
+
   useEffect(() => {
     socket.on('id', (id) => {
       setName(id);
