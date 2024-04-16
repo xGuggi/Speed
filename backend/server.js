@@ -22,6 +22,7 @@ let rightDisregard = [];
 let playerOne = '';
 let playerTwo = '';
 let shuffledArray = [];
+let staleMateShuffled = [];
 let usedIndexes = [];
 
 
@@ -37,7 +38,15 @@ function Initialshuffle(event){
         usedIndexes.push(rando);
         i++;
       }
-  }  
+  }
+  return shuffledArray;  
+}
+
+function stalemateShuffle(event){
+  arrayToShuffle = event;
+  staleMateShuffled = Initialshuffle(arrayToShuffle);
+  console.log("-----------StaleMate Shuffled------------");
+  console.log(staleMateShuffled);
 }
 
 function playerOneDeck(event) {
@@ -46,6 +55,7 @@ function playerOneDeck(event) {
   {
     playerOneStash[i] = event[i];
   }
+  console.log("------PlayerOneStash--------");
   console.log(playerOneStash);
 }
 
@@ -60,6 +70,7 @@ function playerTwoDeck(event) {
       z++;
     }
   }
+  console.log("----------PlayerTwoStash---------");
   console.log(playerTwoStash);
 }
 
@@ -74,6 +85,7 @@ function leftCards(event) {
       z++;
     }
   }
+  console.log("--------LeftDeck---------");
   console.log(leftDeck);
 }
 
@@ -88,6 +100,7 @@ function rightCards(event) {
       z++;
     }
   }
+  console.log("-----------RightDeck---------");
   console.log(rightDeck);
 }
 // Middleware
@@ -123,6 +136,20 @@ socket.on('gameState', (fullDeck) =>{
   
 });
 });
+
+io.on('connection', (socket) => {
+  socket.on('staleMate', (staleMateCards) => {
+    console.log(staleMateCards);
+    stalemateShuffle(staleMateCards);
+
+    // Send shuffled cards to frontend
+
+    //leftCards(staleMateCards);
+    //rightCards(staleMateCards);
+    console.log(staleMateCards);
+    socket.emit('receiveStalemate', staleMateCards);
+  })
+})
 
 
 

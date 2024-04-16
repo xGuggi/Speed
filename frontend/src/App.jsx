@@ -222,9 +222,26 @@ function App() {
     socket.emit('gameState', fullDeck);
   }, []);
 
-  
+  useEffect(() => {
+    socket.on('id', (id) => {
+      setName(id);
+      console.log(id); 
+    });
+    socket.emit('staleMate', fullDeck);
+  }, []);
 
-  
+  socket.on('receiveStalemate', (cards) => {
+    console.log(cards);
+    //Update left and right pile states and disregard cards
+    for (i = 0; i < cards.length; i++) {
+      if (cards[i] % 2 === 0) {
+        leftDeck.push(cards[i]);
+      }
+      else {
+        rightDeck.push(cards[i]);
+      }
+    }
+  })
   // Define initial state for player's hand, central piles, and remaining cards
   const [playerHand, setPlayerHand] = useState([
     { rank: 'A', suit: '♠' },
@@ -233,8 +250,6 @@ function App() {
     
     // Add more cards as needed
   ]);
-
-  
 
 
   const [centralPiles, setCentralPiles] = useState([
