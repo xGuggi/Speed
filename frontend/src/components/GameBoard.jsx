@@ -9,24 +9,47 @@ function GameBoard({ playerHand, setPlayerHand, centralPiles, setCentralPiles, r
   );
 
   const handleDrop = (event) => {
+    // THINGS THAT MUST HAPPEN IN THIS FUNCTION:
+    // 1. determin the value of the pile the "active" card is over
+    // 2. validate
+    //    - either back end tells front end if it is valid
+    //    - or front end tells backend what happend
+    // 3. update react state
+    //    - player hand
+    //    - piles
+
+
+
+
     console.log("in handle drop");
     const { active, over } = event;
+    // TODO: FIGURE OUT HOW TO GET ACCESS TO THE ELEMENT IT IS OVER
+
     console.log("over: ", over);
     console.log("active: ", active);
-    const cardID = active.id;
+    
 
+    // ALL THE CARD INFO IS STORED IN THE CARDID FOR EASY ACCESS
+    // THIS LINE UNPACKS THE VALUES FOR EASY ACCESS
+    const cardID = active.id;
     const [, cardIndex, cardRank, cardSuit] = cardID.split('-');
 
 
-    // ask backend if card works on a pile
 
 
     if (true) { // Implement game rules validation here
+
+      // update pile - this is debug, none of it has worked yet
       const newPiles = [...centralPiles];
       newPiles[toPileIndex].push(fromCard);
       setCentralPiles(newPiles);
-      // filter out the placed card
+
+
+      // update player hand
+      // filter out the placed card, I think the line below works, but i cant tell
       // const newHand = prevHand.filter(card => card.rank !== cardRank || card.suit !== cardSuit);
+
+      // for debug, just trying to set the hand 
       const newHand = [
         { rank: '2', suit: '♣' },
         { rank: '2', suit: '♣' },
