@@ -39,4 +39,31 @@
   .remaining-cards p {
     margin: 0;
   }
+
+  .draggable-element {
+    cursor: grab;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+  .draggable-element:active {
+    cursor: grabbing;
+    opacity: 1;
+  }
+
+  .drop-target {
+    border: 2px dashed #0074D9;
+    transition: border-color 0.2s ease;
+  }
+  .drop-target:hover {
+    border-color: #FF4136;
+  }
+
+  .draggable-element,
+.drop-target {
+  transition: transform 0.2s ease;
+}
+.draggable-element:active {
+  transform: scale(1.1);
+}
+
   

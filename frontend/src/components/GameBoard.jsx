@@ -1,7 +1,7 @@
 // GameBoard.js
 import React from 'react';
 import GameControls from './GameControls';
-import CardSVG from './CardSVG';
+import Svg from './CardSVG';
 
 function GameBoard({ playerHand, centralPiles, remainingCards, onPlayCard, onDrawCard, onDeclareSpeed }) {
   return (
@@ -11,7 +11,7 @@ function GameBoard({ playerHand, centralPiles, remainingCards, onPlayCard, onDra
         <div className="cards">
           {/* Display player's hand of cards */}
           {playerHand.map((card, index) => (
-            <CardSVG key={index} rank={card.rank} suit={card.suit} />
+            <Svg key={index} rank={card.rank} suit={card.suit} />
           ))}
         </div>
       </div>
@@ -22,7 +22,7 @@ function GameBoard({ playerHand, centralPiles, remainingCards, onPlayCard, onDra
           {centralPiles.map((pile, index) => (
             <div key={index} className="pile">
               {pile.map((card, idx) => (
-                <CardSVG key={idx} rank={card.rank} suit={card.suit} />
+                <Svg key={idx} rank={card.rank} suit={card.suit} />
               ))}
             </div>
           ))}

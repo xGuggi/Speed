@@ -77,13 +77,13 @@ function App() {
     // Add more cards as needed
   ]);
 
-  useEffect(() => {
-    socket.on('id', (id) => {
-      setName(id);
-      console.log(id); 
-    });
-    socket.emit('gameState', fullDeck);
-  }, []);
+  // useEffect(() => {
+  //   socket.on('id', (id) => {
+  //     setName(id);
+  //     console.log(id); 
+  //   });
+  //   socket.emit('gameState', fullDeck);
+  // }, []);
 
   
 
@@ -136,16 +136,31 @@ function App() {
       <h1>SPEED Game</h1>
       <div className="game-container">
       <DndProvider backend={HTML5Backend}>
-        <GameBoard
-          playerHand={playerHand}
-          centralPiles={centralPiles}
-          remainingCards={remainingCards}
-          onPlayCard={handlePlayCard}
-          onDrawCard={handleDrawCard}
-          onDeclareSpeed={handleDeclareSpeed}
-        />
-        <Svg rank="A" suit="♠" />
-      </DndProvider>
+          <GameBoard
+            playerHand={playerHand}
+            centralPiles={centralPiles}
+            remainingCards={remainingCards}
+            onPlayCard={handlePlayCard}
+            onDrawCard={handleDrawCard}
+            onDeclareSpeed={handleDeclareSpeed}
+          />
+          {/* Render player's hand */}
+          <div className="player-hand">
+            {playerHand.map((card, index) => (
+              <Svg key={index} rank={card.rank} suit={card.suit} />
+            ))}
+          </div>
+          {/* Render central piles */}
+          <div className="central-piles">
+            {centralPiles.map((pile, pileIndex) => (
+              <div key={pileIndex} className="pile">
+                {pile.map((card, cardIndex) => (
+                  <Svg key={cardIndex} rank={card.rank} suit={card.suit} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </DndProvider>
       {/* Other components can be added here */}
       </div>
     </div>
