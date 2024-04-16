@@ -73,7 +73,7 @@ function App() {
     { rank: 'A', suit: '♥' },
     // Add more cards as needed
   ]);
-
+  let shuffledDeck = [];
   let leftDisregard = [];
   let rightDisregard = [];
   let playerOneStash = [];
@@ -86,78 +86,122 @@ function App() {
   function checkIfNone(event) {
     let playerOneRank;
     let playerTwoRank;
+    let playable = false; 
+    leftDisRank = parseInt(leftDisregard[0].rank);
+    rightDisRank = parseInt(rightDisregard[0].rank);
     for (let i = 0; i < playerOneHand.length; i++)
     {
-      if (playerOneHand[i].rank === 'A' || playerOneHand[i].rank === 'K' || playerOneHand[i].rank === 'Q' || playerOneHand[i].rank === 'J')
+      switch(playerOneHand[i].rank) 
       {
-        if (playerOneHand[i].rank === 'A')
-        {
+        case 'A':
           playerOneRank = 14;
-        }
-        else if (playerOneHand[i].rank === 'K')
-        {
+          break;
+        case 'K':
           playerOneRank = 13;
-        }
-        else if (playerOneHand[i].rank === 'Q')
-        {
+          break;
+        case 'Q':
           playerOneRank = 12;
-        }
-        else if (playerOneHand[i].rank === 'J')
-        {
+          break;
+        case 'J':
           playerOneRank = 11;
-        }
-      }  
-      playerOneRank = parseInt(playerOneHand[i].rank);
-      leftDisRank = parseInt(leftDisregard[0].rank);
-      rightDisRank = parseInt(rightDisregard[0].rank);
-      if ((playerOneRank === leftDisRank - 1) || (playerOneRank === leftDisRank + 1) || (playerOneRank === rightDisRank + 1) || (playerOneRank === rightDisRank - 1))
-      {
-        return true;
+          break;
+        default:
+          playerOneRank = parseInt(playerOneHand[i].rank);
+          break;
       }
-      
-      
-      playerTwoRank = parseInt(playerTwoHand[i].rank);
+      if ((playerOneRank === 14 && leftDisRank === 2) ||(playerOneRank === 14 && rightDisRank === 2))
+      {
+        playable = true;
+      }
+      else if ((playerOneRank === leftDisRank - 1) || (playerOneRank === leftDisRank + 1) || (playerOneRank === rightDisRank + 1) || (playerOneRank === rightDisRank - 1))
+      {
+        playable = true;
+      }
     }
-    //check every position in the players array
-    //if none of the positions are plus one or minus 1 to either the left or right than take one card from each of the middle piles.
+    for (let i = 0; i < playerTwoHand.length; i++)
+    {
+      switch(playerTwoHand[i].rank) 
+      {
+        case 'A':
+          playerTwoRank = 14;
+          break;
+        case 'K':
+          playerTwoRank = 13;
+          break;
+        case 'Q':
+          playerTwoRank = 12;
+          break;
+        case 'J':
+          playerTwoRank = 11;
+          break;
+        default:
+          playerTwoRank = parseInt(playerTwoHand[i].rank);
+          break;
+      }
+      if ((playerTwoRank === 14 && leftDisRank === 2) ||(playerTwoRank === 14 && rightDisRank === 2))
+      {
+        playable = true;
+      }
+      else if ((playerTwoRank === leftDisRank - 1) || (playerTwoRank === leftDisRank + 1) || (playerTwoRank === rightDisRank + 1) || (playerTwoRank === rightDisRank - 1))
+      {
+        playable = true;
+      }
+    }
+    return playable; 
   }
+
+
+
   function popForOne(event){
+    if (!playerOneStash.length)
+    {
+      return;
+    }
+    else if (playerOneHand.length < 4)
+    {
+      playerOneHand.push(playerOneStash[0]);
+      playerOneStash.shift();
+    }
+  }
+
+  function popForTwo(event){
+    if (!playerTwoStash.length)
+    {
+      return;
+    }
+    else if (playerTwoHand.length < 4)
+    {
+      playerTwoHand.push(playerTwoStash[0]);
+      playerTwoStash.shift();
+    }
+  }
+
+  function populateOneHand(event){
     z = 0;
     for (let i = 0; i < playerOneStash.length; i++)
     {
       if (z > 4)
       {
-        continue; 
+        continue;
       }
-      else
-      {
-        z++;
-        playerOneHand[i] = playerOneStash[i];
-        playerOneStash.shift();
-      }
+      playerOneHand[i] = playerOneStash[i];
+      playerOneStash.shift();
     }
   }
 
-  function popForTwo(event){
+  function populateTwoHand(event){
     z = 0;
     for (let i = 0; i < playerTwoStash.length; i++)
     {
       if (z > 4)
       {
-        continue; 
+        continue;
       }
-      else
-      {
-        z++;
-        playerTwoHand[i] = playerTwoStash[i];
-        playerOneStash.shift();
-      }
+      playerTwoHand[i] = playerTwoStash[i];
+      playerTwoStash.shift();
     }
   }
 
-  //check for none
-  //shuffle for out of side cards
-  //stalemate shuffle
   ////////////////////////////////////////////////
 
 
@@ -222,6 +266,10 @@ function App() {
     socket.emit('gameState', fullDeck);
   }, []);
 
+  socket.on('cards', (shuffledArray) =>{
+    //set shuffled arrray
+    shuffledDeck = shuffledArray;
+  });
   useEffect(() => {
     socket.on('id', (id) => {
       setName(id);
