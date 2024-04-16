@@ -269,6 +269,11 @@ function App() {
   socket.on('cards', (shuffledArray) =>{
     //set shuffled arrray
     shuffledDeck = shuffledArray;
+    //Set up game board
+    playerOneDeck(shuffledArray);
+    playerTwoDeck(shuffledArray);
+    leftCards(shuffledArray);
+    rightCards(shuffledArray);
   });
   useEffect(() => {
     socket.on('id', (id) => {
