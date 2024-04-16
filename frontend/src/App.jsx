@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GameBoard from './components/GameBoard';
 import io from 'socket.io-client';
-
+  
 const socket = io('http://localhost:5001', {
   withCredentials: true,
   extraHeaders: {
@@ -195,9 +195,7 @@ function App() {
   const [playerHand, setPlayerHand] = useState([
     { rank: 'A', suit: '♠' },
     { rank: '2', suit: '♦' },
-    { rank: 'K', suit: '♣' },
-    
-    // Add more cards as needed
+    { rank: 'K', suit: '♣' },    
   ]);
 
   
@@ -226,6 +224,8 @@ function App() {
 
   // Function to handle drawing a card
   const handleDrawCard = () => {
+    // for testing
+    setPlayerHand([...playerHand, { rank: '2', suit: '♣' }]);
     // Implement logic to draw a card
   };
 
@@ -245,8 +245,8 @@ function App() {
           onPlayCard={handlePlayCard}
           onDrawCard={handleDrawCard}
           onDeclareSpeed={handleDeclareSpeed}
+          setPlayerHand={setPlayerHand}
         />
-        {/* Other components can be added here */}
       </div>
     </div>
   );
