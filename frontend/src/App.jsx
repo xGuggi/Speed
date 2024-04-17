@@ -5,10 +5,21 @@ import {Droppable} from './Droppable';
 import {Draggable} from './Draggable';
 import CardSVG from './CardSVG';
 
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5001', {
+  withCredentials: true,
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  },
+  transports: ["websocket"]
+});
+
 export default function App() {
   const [hand, setHand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
+  
 
 
   function handleDragEnd(event) {
@@ -16,6 +27,14 @@ export default function App() {
 
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
+
+    useEffect(() => {
+      socket.on('id', (id) => {
+        setName(id);
+        console.log(id); 
+      });
+      socket.emit('gameState', fullDeck);
+    }, []);
 
     // HANDLE OVER LEFT PILE
     if (over.id.split('-')[0] === "l") {
@@ -29,7 +48,10 @@ export default function App() {
     // HANDLE UPDATE HAND
     const newHand = hand.filter(cardid => cardid !== cardID);
     setHand(newHand);
+
+
   }
+
 
   return (
 
