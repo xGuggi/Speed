@@ -279,9 +279,24 @@ export default function App() {
     console.log("insideUseEffect");
   }, []);
 
-  socket.on('cards', (shuffledDeck) => {
-    setFullDeck(shuffledDeck);
-  })
+  socket.on('cards', (shuffledArray) =>{
+    //set shuffled arrray
+    shuffledDeck = shuffledArray;
+    //Set up game board
+    playerOneDeck(shuffledArray);
+    playerTwoDeck(shuffledArray);
+    leftCards(shuffledArray);
+    rightCards(shuffledArray);
+  });
+
+
+  useEffect(() => {
+    socket.on('id', (id) => {
+      setName(id);
+      console.log(id); 
+    });
+    socket.emit('staleMate', fullDeck);
+  }, []);
 
 
   function handleDragEnd(event) {
