@@ -9,57 +9,49 @@ function GameBoard({ playerHand, setPlayerHand, centralPiles, setCentralPiles, r
   );
 
   const handleDrop = (event) => {
-    // THINGS THAT MUST HAPPEN IN THIS FUNCTION:
-    // 1. determin the value of the pile the "active" card is over
-    // 2. validate
-    //    - either back end tells front end if it is valid
-    //    - or front end tells backend what happend
-    // 3. update react state
-    //    - player hand
-    //    - piles
-
-
-
-
-    console.log("in handle drop");
     const { active, over } = event;
-    // TODO: FIGURE OUT HOW TO GET ACCESS TO THE ELEMENT IT IS OVER
-
-    console.log("over: ", over);
-    console.log("active: ", active);
-    
-
-    // ALL THE CARD INFO IS STORED IN THE CARDID FOR EASY ACCESS
-    // THIS LINE UNPACKS THE VALUES FOR EASY ACCESS
-    const cardID = active.id;
-    const [, cardIndex, cardRank, cardSuit] = cardID.split('-');
-
-
-
-
-    if (true) { // Implement game rules validation here
-
-      // update pile - this is debug, none of it has worked yet
+  
+    // Extract the card data from the active draggable
+    const cardData = active.data.current;
+  
+    // Extract pile ID from the drop target
+    const [, pileIndex] = over.id.split('-');
+    const toPileIndex = parseInt(pileIndex);
+  
+    // Determine source pile ID (if dropped from a pile)
+    const [, fromPileIndex] = active.id.split('-');
+    const fromPile = fromPileIndex ? parseInt(fromPileIndex) : null;
+  
+    // Determine the card being moved
+    const fromCardIndex = parseInt(cardData.index);
+    const fromCard = fromPile !== null ? centralPiles[fromPile][fromCardIndex] : playerHand[fromCardIndex];
+  
+    // Implement game rules validation here
+    let isValidMove = true; // Placeholder for your validation logic
+  
+    if (isValidMove) {
+      // Update the React state
+      if (fromPile === null) {
+        // If the card is dropped from the player's hand
+        const newHand = playerHand.filter((_, index) => index !== fromCardIndex);
+        setPlayerHand(newHand);
+      } else {
+        // If the card is dropped from a central pile
+        const newPiles = [...centralPiles];
+        newPiles[fromPile] = newPiles[fromPile].filter((_, index) => index !== fromCardIndex);
+        setCentralPiles(newPiles);
+      }
+  
+      // Update the destination pile
       const newPiles = [...centralPiles];
       newPiles[toPileIndex].push(fromCard);
       setCentralPiles(newPiles);
-
-
-      // update player hand
-      // filter out the placed card, I think the line below works, but i cant tell
-      // const newHand = prevHand.filter(card => card.rank !== cardRank || card.suit !== cardSuit);
-
-      // for debug, just trying to set the hand 
-      const newHand = [
-        { rank: '2', suit: '♣' },
-        { rank: '2', suit: '♣' },
-        { rank: '2', suit: '♣' },
-        { rank: '2', suit: '♣' },
-        { rank: '2', suit: '♣' },
-      ];
-      setPlayerHand(newHand);
+    } else {
+      // Handle invalid move
+      console.log('Invalid move');
     }
   };
+  
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDrop}>

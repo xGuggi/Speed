@@ -321,10 +321,24 @@ function App() {
 
   // Function to handle drawing a card
   const handleDrawCard = () => {
-    // for testing
-    setPlayerHand([...playerHand, { rank: '2', suit: '♣' }]);
-    // Implement logic to draw a card
+    // Check if there are remaining cards to draw
+    if (remainingCards > 0) {
+      // Retrieve a card from the remaining cards pool
+      checkForLess(playerOneStash);
+      //const drawnCard = shuffledDeck.pop(); // Assuming shuffledDeck is your array of shuffled cards
+      
+      // Add the drawn card to the player's hand
+      //let newPlayerHand = [...playerHand, drawnCard];
+      let newPlayerHand = playerOneHand;
+      // Update the state of the player's hand and the remaining cards pool
+      setPlayerHand(newPlayerHand);
+      setRemainingCards(remainingCards - 1);
+    } else {
+      // Handle the case when there are no more cards to draw
+      console.log("No more cards to draw.");
+    }
   };
+  
 
   // Function to handle declaring SPEED
   const handleDeclareSpeed = () => {
