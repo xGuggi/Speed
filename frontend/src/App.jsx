@@ -150,14 +150,23 @@ function App() {
     return playable; 
   }
 
-
+  function checkForLess(event){
+    if (playerOneHand.length < 4)
+    {
+      popForOne(playerOneStash);
+    }
+    if (playerTwoHand.length < 4)
+    {
+      popForTwo(playerTwoStash); 
+    }
+  }
 
   function popForOne(event){
     if (!playerOneStash.length)
     {
       return;
     }
-    else if (playerOneHand.length < 4)
+    else //if (playerOneHand.length < 4)
     {
       playerOneHand.push(playerOneStash[0]);
       playerOneStash.shift();
@@ -169,7 +178,7 @@ function App() {
     {
       return;
     }
-    else if (playerTwoHand.length < 4)
+    else //if (playerTwoHand.length < 4)
     {
       playerTwoHand.push(playerTwoStash[0]);
       playerTwoStash.shift();
@@ -177,6 +186,7 @@ function App() {
   }
 
   function populateOneHand(event){
+    playerOneHand = [];
     z = 0;
     for (let i = 0; i < playerOneStash.length; i++)
     {
@@ -190,6 +200,7 @@ function App() {
   }
 
   function populateTwoHand(event){
+    playerTwoHand = [];
     z = 0;
     for (let i = 0; i < playerTwoStash.length; i++)
     {
@@ -244,7 +255,7 @@ function App() {
   }
   
   function rightCards(event) {
-    leftDeck = [];
+    rightDeck = [];
     let z = 0; 
     for (let i = 46; i < 52; i++)
     {
@@ -269,6 +280,11 @@ function App() {
   socket.on('cards', (shuffledArray) =>{
     //set shuffled arrray
     shuffledDeck = shuffledArray;
+    //Set up game board
+    playerOneDeck(shuffledArray);
+    playerTwoDeck(shuffledArray);
+    leftCards(shuffledArray);
+    rightCards(shuffledArray);
   });
   useEffect(() => {
     socket.on('id', (id) => {
