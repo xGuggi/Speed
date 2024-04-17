@@ -13,18 +13,18 @@ export default function App() {
 
   function handleDragEnd(event) {
     const {active, over} = event;
+
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
 
     // HANDLE OVER LEFT PILE
     if (over.id.split('-')[0] === "l") {
-      setLeftPile("l-" + rank + suit)
+      setLeftPile("l-" + rank + "-" + suit)
     }
     // HANDLE OVER RIGHT PILE
     else if (over.id.split('-')[0] === "r") {
-      setRightPile("r-" + rank + suit)
+      setRightPile("r-" + rank + "-" + suit)
     }
-    
 
     // HANDLE UPDATE HAND
     const newHand = hand.filter(cardid => cardid !== cardID);
