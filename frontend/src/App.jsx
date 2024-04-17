@@ -187,7 +187,7 @@ function App() {
 
   function populateOneHand(event){
     playerOneHand = [];
-    z = 0;
+    let z = 0;
     for (let i = 0; i < playerOneStash.length; i++)
     {
       if (z > 4)
@@ -196,12 +196,17 @@ function App() {
       }
       playerOneHand[i] = playerOneStash[i];
       playerOneStash.shift();
+      z++;
     }
+    console.log("player one hand");
+    console.log(playerOneHand);
+    console.log("player one stash");
+    console.log(playerOneStash);
   }
 
   function populateTwoHand(event){
     playerTwoHand = [];
-    z = 0;
+    let z = 0;
     for (let i = 0; i < playerTwoStash.length; i++)
     {
       if (z > 4)
@@ -210,7 +215,12 @@ function App() {
       }
       playerTwoHand[i] = playerTwoStash[i];
       playerTwoStash.shift();
+      z++;
     }
+    console.log("player two hand");
+    console.log(playerTwoHand);
+    console.log("player two stash");
+    console.log(playerTwoStash);
   }
 
   ////////////////////////////////////////////////
@@ -223,11 +233,12 @@ function App() {
     {
       playerOneStash[i] = event[i];
     }
+    console.log("Player one stash");
     console.log(playerOneStash);
   }
   
   function playerTwoDeck(event) {
-    playerOneStash = [];
+    playerTwoStash = [];
     let z = 0;
     for (let i = 20; i < 40; i++)
     {
@@ -237,6 +248,7 @@ function App() {
         z++;
       }
     }
+    console.log("Player two stash");
     console.log(playerTwoStash);
   }
   
@@ -251,6 +263,7 @@ function App() {
         z++;
       }
     }
+    console.log("left deck");
     console.log(leftDeck);
   }
   
@@ -265,6 +278,7 @@ function App() {
         z++;
       }
     }
+    console.log("right deck");
     console.log(rightDeck);
   }
   ///////////////////////////////////////////////////
@@ -272,6 +286,7 @@ function App() {
   useEffect(() => {
     socket.on('id', (id) => {
       setName(id);
+
       console.log(id); 
     });
     socket.emit('gameState', fullDeck);
@@ -280,24 +295,28 @@ function App() {
   socket.on('cards', (shuffledArray) =>{
     //set shuffled arrray
     shuffledDeck = shuffledArray;
+
     //Set up game board
     playerOneDeck(shuffledArray);
     playerTwoDeck(shuffledArray);
     leftCards(shuffledArray);
     rightCards(shuffledArray);
+    populateOneHand(playerOneStash);
+    populateTwoHand(playerTwoStash);
+    //console.log(playerOneHand);
   });
-  useEffect(() => {
-    socket.on('id', (id) => {
-      setName(id);
-      console.log(id); 
-    });
-    socket.emit('staleMate', fullDeck);
-  }, []);
+  // useEffect(() => {
+  //   socket.on('id', (id) => {
+  //     setName(id);
+  //     console.log(id); 
+  //   });
+  //   socket.emit('staleMate', fullDeck);
+  // }, []);
 
   socket.on('receiveStalemate', (cards) => {
-    console.log(cards);
+    //console.log(cards);
     //Update left and right pile states and disregard cards
-    for (i = 0; i < cards.length; i++) {
+    for (let i = 0; i < cards.length; i++) {
       if (cards[i] % 2 === 0) {
         leftDeck.push(cards[i]);
       }
@@ -305,13 +324,14 @@ function App() {
         rightDeck.push(cards[i]);
       }
     }
-  })
+  });
   // Define initial state for player's hand, central piles, and remaining cards
   const [playerHand, setPlayerHand] = useState([
     { rank: 'A', suit: '♠' },
     { rank: '2', suit: '♦' },
     { rank: 'K', suit: '♣' },    
   ]);
+
 
 
   const [centralPiles, setCentralPiles] = useState([
