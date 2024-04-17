@@ -60,6 +60,7 @@ function GameBoard({ playerHand, setPlayerHand, centralPiles, setCentralPiles, r
       setPlayerHand(newHand);
     }
   };
+  
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDrop}>
