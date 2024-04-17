@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {DndContext} from '@dnd-kit/core';
 
 import {Droppable} from './Droppable';
@@ -19,25 +19,87 @@ export default function App() {
   const [hand, setHand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
-  
+  const [fullDeck, setFullDeck] = useState([
+    { rank: '2', suit: '♠' },
+    { rank: '3', suit: '♠' },
+    { rank: '4', suit: '♠' },
+    { rank: '5', suit: '♠' },
+    { rank: '6', suit: '♠' },
+    { rank: '7', suit: '♠' },
+    { rank: '8', suit: '♠' },
+    { rank: '9', suit: '♠' },
+    { rank: '10', suit: '♠' },
+    { rank: 'J', suit: '♠' },
+    { rank: 'Q', suit: '♠' },
+    { rank: 'K', suit: '♠' },
+    { rank: 'A', suit: '♠' },
+
+    { rank: '2', suit: '♦' },
+    { rank: '3', suit: '♦' },
+    { rank: '4', suit: '♦' },
+    { rank: '5', suit: '♦' },
+    { rank: '6', suit: '♦' },
+    { rank: '7', suit: '♦' },
+    { rank: '8', suit: '♦' },
+    { rank: '9', suit: '♦' },
+    { rank: '10', suit: '♦' },
+    { rank: 'J', suit: '♦' },
+    { rank: 'Q', suit: '♦' },
+    { rank: 'K', suit: '♦' },
+    { rank: 'A', suit: '♦' },
+
+    { rank: '2', suit: '♣' },
+    { rank: '3', suit: '♣' },
+    { rank: '4', suit: '♣' },
+    { rank: '5', suit: '♣' },
+    { rank: '6', suit: '♣' },
+    { rank: '7', suit: '♣' },
+    { rank: '8', suit: '♣' },
+    { rank: '9', suit: '♣' },
+    { rank: '10', suit: '♣' },
+    { rank: 'J', suit: '♣' },
+    { rank: 'Q', suit: '♣' },
+    { rank: 'K', suit: '♣' },
+    { rank: 'A', suit: '♣' },
+
+    { rank: '2', suit: '♥' },
+    { rank: '3', suit: '♥' },
+    { rank: '4', suit: '♥' },
+    { rank: '5', suit: '♥' },
+    { rank: '6', suit: '♥' },
+    { rank: '7', suit: '♥' },
+    { rank: '8', suit: '♥' },
+    { rank: '9', suit: '♥' },
+    { rank: '10', suit: '♥' },
+    { rank: 'J', suit: '♥' },
+    { rank: 'Q', suit: '♥' },
+    { rank: 'K', suit: '♥' },
+    { rank: 'A', suit: '♥' },
+  ]);
 
   const handleDraw = ()=> {
-    setHand([...hand, "h-1-♠"]);
+    setHand([...hand, "h-" + fullDeck[15].rank + "-" + fullDeck[15].suit]);
   }
+
+  useEffect(() => {
+    socket.on('id', (id) => {
+      //setName(id);
+      console.log(id); 
+    });
+    socket.emit('gameState', fullDeck);
+    console.log("insideUseEffect");
+  }, []);
+
+  socket.on('cards', (shuffledDeck) => {
+    setFullDeck(shuffledDeck);
+  })
+
 
   function handleDragEnd(event) {
     const {active, over} = event;
 
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
-
-    useEffect(() => {
-      socket.on('id', (id) => {
-        setName(id);
-        console.log(id); 
-      });
-      socket.emit('gameState', fullDeck);
-    }, []);
 
     // HANDLE OVER LEFT PILE
     if (over.id.split('-')[0] === "l") {
