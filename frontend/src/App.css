@@ -1,9 +1,6 @@
-.CardPile {
-  height: 250px;
+.CenterPiles {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #282c34;
+  flex-wrap: nowrap;
 }
 
 .Card {

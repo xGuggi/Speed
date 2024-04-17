@@ -4,6 +4,7 @@ import {DndContext} from '@dnd-kit/core';
 import {Droppable} from './Droppable';
 import {Draggable} from './Draggable';
 import CardSVG from './CardSVG';
+import './App.css'
 
 import io from 'socket.io-client';
 
@@ -80,6 +81,11 @@ export default function App() {
   const handleDraw = ()=> {
     setHand([...hand, "h-" + fullDeck[15].rank + "-" + fullDeck[15].suit]);
   }
+  const handleStalemate = ()=> {
+    // GET NEW CARDS BEFORE SETTING
+    setLeftPile("l-" + "F" + "-" + "F");
+    setRightPile("r-" + "F" + "-" + "F");
+  }
 
   useEffect(() => {
     socket.on('id', (id) => {
@@ -138,24 +144,31 @@ export default function App() {
     <DndContext onDragEnd={handleDragEnd}>
       <h2>Board</h2>
 
-      <Droppable key={leftPile} id={leftPile}>
-        {(
-          () => {
-            const [_, rank, suit] = leftPile.split('-');
-            return  <CardSVG rank={rank} suit={suit}/>
-          }
-        )()}
-      </Droppable>
+      <div className='CenterPiles'>
+        <button onClick={handleStalemate}>
+          <CardSVG rank="" suit="" />
+        </button>
+        <Droppable key={leftPile} id={leftPile}>
+          {(
+            () => {
+              const [_, rank, suit] = leftPile.split('-');
+              return  <CardSVG rank={rank} suit={suit}/>
+            }
+          )()}
+        </Droppable>
 
-      <Droppable key={rightPile} id={rightPile}>
-        {(
-          () => {
-            const [_, rank, suit] = rightPile.split('-');
-            return  <CardSVG rank={rank} suit={suit}/>
-          }
-        )()}        
-      </Droppable>
-
+        <Droppable key={rightPile} id={rightPile}>
+          {(
+            () => {
+              const [_, rank, suit] = rightPile.split('-');
+              return  <CardSVG rank={rank} suit={suit}/>
+            }
+          )()}        
+        </Droppable>
+        <button onClick={handleStalemate}>
+          <CardSVG rank="" suit="" />
+        </button>
+      </div>
 
       <h2>Your Hand</h2>
       {hand.map((cardid, index) => {
