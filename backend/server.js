@@ -49,60 +49,7 @@ function stalemateShuffle(event){
   console.log(staleMateShuffled);
 }
 
-function playerOneDeck(event) {
-  playerOneStash = [];
-  for (let i = 0; i < 20; i++)
-  {
-    playerOneStash[i] = event[i];
-  }
-  console.log("------PlayerOneStash--------");
-  console.log(playerOneStash);
-}
 
-function playerTwoDeck(event) {
-  playerOneStash = [];
-  let z = 0;
-  for (let i = 20; i < 40; i++)
-  {
-    if (i > 19)
-    {
-      playerTwoStash[z] = event[i];
-      z++;
-    }
-  }
-  console.log("----------PlayerTwoStash---------");
-  console.log(playerTwoStash);
-}
-
-function leftCards(event) {
-  leftDeck = [];
-  let z = 0;
-  for (let i = 40; i < 46; i++)
-  {
-    if (i > 39)
-    {
-      leftDeck[z] = event[i];
-      z++;
-    }
-  }
-  console.log("--------LeftDeck---------");
-  console.log(leftDeck);
-}
-
-function rightCards(event) {
-  leftDeck = [];
-  let z = 0; 
-  for (let i = 46; i < 52; i++)
-  {
-    if (i > 45) 
-    {
-      rightDeck[z] = event[i];
-      z++;
-    }
-  }
-  console.log("-----------RightDeck---------");
-  console.log(rightDeck);
-}
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -124,16 +71,8 @@ io.on('connection', (socket) =>{
 socket.on('gameState', (fullDeck) =>{
   console.log(fullDeck);
   Initialshuffle(fullDeck);
-  playerOneDeck(shuffledArray);
-  playerTwoDeck(shuffledArray);
-  leftCards(shuffledArray);
-  rightCards(shuffledArray);
   console.log(shuffledArray);
-  //let test = parseInt(shuffledArray[4].rank);
-  //console.log(test);
-  //console.log(test + 1);
   socket.emit('cards', shuffledArray);
-  
 });
 });
 
