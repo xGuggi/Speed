@@ -49,26 +49,35 @@ export default function App() {
   
     // Handle drop zones for piles
     if (over.id.split('-')[0] === "l") {
-      setLeftPile("l-" + rank + "-" + suit);
-    } else if (over.id.split('-')[0] === "r") {
-      setRightPile("r-" + rank + "-" + suit);
-    } else if (over.id.split('-')[0] === "p2l") {
-      setLeftPile("p2l-" + rank + "-" + suit);
-    } else if (over.id.split('-')[0] === "p2r") {
-      setRightPile("p2r-" + rank + "-" + suit);
+      console.log(over.id.split('-')[1]);
+      console.log(rank);
+      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
+        setLeftPile("l-" + rank + "-" + suit);
+        console.log(over.id);
+      }
+      else {
+        return;
+      }
+
     }
-  
-    // Update the state
-    setPlayer1Hand(updatedPlayer1Hand);
-    setPlayer2Hand(updatedPlayer2Hand);
-  
-    // Emit socket events if needed
-    // Modify according to your Socket.io implementation
-    socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
+    // HANDLE OVER RIGHT PILE
+    else if (over.id.split('-')[0] === "r") {
+      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
+        setRightPile("r-" + rank + "-" + suit);
+      }
+      else {
+        return;
+      }
+      
+    }
+
+    // HANDLE UPDATE HAND
+    const newHand = hand.filter(cardid => cardid !== cardID);
+    setHand(newHand);
+
+
   }
-  
-  
-  
+
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
