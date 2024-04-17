@@ -103,11 +103,26 @@ export default function App() {
 
     // HANDLE OVER LEFT PILE
     if (over.id.split('-')[0] === "l") {
-      setLeftPile("l-" + rank + "-" + suit)
+      console.log(over.id.split('-')[1]);
+      console.log(rank);
+      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
+        setLeftPile("l-" + rank + "-" + suit);
+        console.log(over.id);
+      }
+      else {
+        return;
+      }
+
     }
     // HANDLE OVER RIGHT PILE
     else if (over.id.split('-')[0] === "r") {
-      setRightPile("r-" + rank + "-" + suit)
+      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
+        setRightPile("r-" + rank + "-" + suit);
+      }
+      else {
+        return;
+      }
+      
     }
 
     // HANDLE UPDATE HAND
