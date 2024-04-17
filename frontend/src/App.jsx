@@ -21,6 +21,9 @@ export default function App() {
   const [rightPile, setRightPile] = useState("r-1-♥");
   
 
+  const handleDraw = ()=> {
+    setHand([...hand, "h-1-♠"]);
+  }
 
   function handleDragEnd(event) {
     const {active, over} = event;
@@ -54,7 +57,7 @@ export default function App() {
 
 
   return (
-
+    <>
     <DndContext onDragEnd={handleDragEnd}>
       <h2>Board</h2>
 
@@ -87,6 +90,15 @@ export default function App() {
         );
       })}
 
+
+
     </DndContext>
+    
+    <hr/>
+    
+    <button onClick={handleDraw}>
+      DRAW
+    </button>
+    </>
   );  
 };
