@@ -17,7 +17,8 @@ const socket = io('http://localhost:5001', {
 });
 
 export default function App() {
-  const [hand, setHand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
+  const [player1Hand, setPlayer1Hand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
+  const [player2Hand, setPlayer2Hand] = useState(["h-5-♠","h-6-♦","h-7-♣","h-8-♥"]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [fullDeck, setFullDeck] = useState([
@@ -78,9 +79,14 @@ export default function App() {
     { rank: 'A', suit: '♥' },
   ]);
 
-  const handleDraw = ()=> {
-    setHand([...hand, "h-" + fullDeck[15].rank + "-" + fullDeck[15].suit]);
+  const handleDraw = (player) => {
+    if (player === 1) {
+      setPlayer1Hand([...player1Hand, "h-1-♠"]);
+    } else {
+      setPlayer2Hand([...player2Hand, "h-1-♠"]);
+    }
   }
+
   const handleStalemate = ()=> {
     // GET NEW CARDS BEFORE SETTING
     setLeftPile("l-" + "F" + "-" + "F");
@@ -101,13 +107,25 @@ export default function App() {
   })
 
 
-  function handleDragEnd(event) {
-    const {active, over} = event;
-
+    function handleDragEnd(event) {
+    const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
+  
+    // Remove the card from the appropriate player's hand
+    let updatedPlayer1Hand = [...player1Hand];
+    let updatedPlayer2Hand = [...player2Hand];
+  
+    if (event.over.id.split('-')[0] === "l" || event.over.id.split('-')[0] === "r" ||
+        event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
+      updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
+      updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
+    } else if (event.over.id.split('-')[0] === "p1") {
+      updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
+    } else if (event.over.id.split('-')[0] === "p2") {
+      updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
+    }
 
-    // HANDLE OVER LEFT PILE
     if (over.id.split('-')[0] === "l") {
       console.log(over.id.split('-')[1]);
       console.log(rank);
@@ -128,22 +146,43 @@ export default function App() {
       else {
         return;
       }
-      
     }
-
-    // HANDLE UPDATE HAND
-    const newHand = hand.filter(cardid => cardid !== cardID);
-    setHand(newHand);
-
-
+  
+    // Handle drop zones for piles
+    if (over.id.split('-')[0] === "l") {
+      setLeftPile("l-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "r") {
+      setRightPile("r-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "p2l") {
+      setLeftPile("p2l-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "p2r") {
+      setRightPile("p2r-" + rank + "-" + suit);
+    }
+  
+    // Update the state
+    setPlayer1Hand(updatedPlayer1Hand);
+    setPlayer2Hand(updatedPlayer2Hand);
+  
+    // Emit socket events if needed
+    // Modify according to your Socket.io implementation
+    socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
   }
 
 
   return (
-    <>
     <DndContext onDragEnd={handleDragEnd}>
-      <h2>Board</h2>
-
+      <div>
+        <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
+        <h2>Player 1 Hand</h2>
+        {player1Hand.map((cardid, index) => {
+          const [_, rank, suit] = cardid.split('-');
+          return (
+            <Draggable key={index} id={cardid}>
+              <CardSVG rank={rank} suit={suit} />
+            </Draggable>
+          );
+        })}
+      </div>
       <div className='CenterPiles'>
         <button onClick={handleStalemate}>
           <CardSVG rank="" suit="" />
@@ -170,25 +209,18 @@ export default function App() {
         </button>
       </div>
 
-      <h2>Your Hand</h2>
-      {hand.map((cardid, index) => {
-        const [_, rank, suit] = cardid.split('-'); // Correctly destructuring the card ID
-        return (
-          <Draggable key={index} id={cardid}>
-            <CardSVG rank={rank} suit={suit} />
-          </Draggable>
-        );
-      })}
-
-
-
+      <div>
+        <h2>Player 2 Hand</h2>
+        {player2Hand.map((cardid, index) => {
+          const [_, rank, suit] = cardid.split('-');
+          return (
+            <Draggable key={index} id={cardid}>
+              <CardSVG rank={rank} suit={suit} />
+            </Draggable>
+          );
+        })}
+      </div>
+      <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
     </DndContext>
-    
-    <hr/>
-    
-    <button onClick={handleDraw}>
-      DRAW
-    </button>
-    </>
-  );  
+  );
 };
