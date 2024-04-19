@@ -1,16 +1,28 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const socketio = require('socket.io');
+const express = require('express'); //old
+const app = express(); //old
 
-const app = express();
-const server = require('http').Server(app);
-const io = socketio(server, {
+const cors = require('cors'); //old
+
+
+require("dotenv").config({ path: "./config.env" });
+app.use(cors({origin: 'http://localhost:5173', credentials: true, }));
+app.use(express.json());
+
+const dbo = require("./db/conn");
+
+
+
+const dotenv = require('dotenv'); //old
+const socketio = require('socket.io'); //old
+
+const server = require('http').Server(app); //old
+const io = socketio(server, { //this was server
   autoConnect: false
-});
+}); //old
 
-dotenv.config();
-const port = process.env.PORT || 5001;
+dotenv.config(); //old
+const port = process.env.PORT || 5001; 
+const portTwo =  5002; 
 let playerOneStash = [];
 let playerTwoStash = [];
 let playerOneHand = [];
@@ -55,16 +67,18 @@ app.use(cors());
 app.use(express.json());
 
 // API Routes
-// const messagesRouter = require('./routes/messages');
-// app.use('/messages', messagesRouter);
+ //const messagesRouter = require('./routes/messages'); //changeing
+ //app.use('/messages', messagesRouter); //changeing
 app.get('/', (req, res) => {
     res.send('hello world')
 });
 
-// Start server
+//Start server
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
 
 
 io.on('connection', (socket) =>{
@@ -121,3 +135,17 @@ io.on('connection', (socket) => {
     playerTwo = '';
   });
 });
+
+
+
+app.listen(portTwo, () => {
+  // perform a database connection when server starts
+  dbo.connectToServer(function (err) {
+    if (err) console.error(err);
+   });
+  console.log(`Server is running on port: ${portTwo}`);
+});
+
+
+app.use(require("./routes/speed"));
+
