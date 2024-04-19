@@ -9,7 +9,7 @@ speedRoutes.post("/setHighScore", async(req, res) => {
     const highScores = req.body;
     console.log(highScores);
     try{
-        const result = await db_connect.collection("highScores").insertOne({
+        const result = await db_connect.collection("SpeedHighScores").insertOne({
         name: req.body.name,
         numOfGuesses: guesses,
         numOfLetters: count
@@ -21,24 +21,25 @@ speedRoutes.post("/setHighScore", async(req, res) => {
 });
 
 
-speedRoutes.get("/getHighScores/:numLetters", async(req, res) => {
+speedRoutes.get("/getScores", async(req, res) => {
     const db_connect = await dbo.getDb();
-    const numLetters = parseInt(req.params.numLetters);
+    //const numLetters = parseInt(req.params.numLetters);
+    let scores = await db_connect.collection("SpeedHighScores").findOne({Name: "Jerry Smith"});//.toArray();
 
-    let highScores = await db_connect.collection("highScores").find({numOfLetters: numLetters}).toArray();
-    console.log("HighScores" + highScores);
-    highScores = highScores.sort((a, b) => (a.numOfGuesses - b.numOfGuesses));
-    let newHighScores = new Array();
+    //let scores = await db_connect.collection("SpeedHighScores").find({numOfLetters: numLetters}).toArray();
+    console.log("HighScores " + scores.Name);
+   // highScores = highScores.sort((a, b) => (a.numOfGuesses - b.numOfGuesses));
+    // let newHighScores = new Array();
 
-    if (highScores.length < 10) {
-        res.json(highScores);
-    }
-    else {
-        for (i = 0; i < 10; i++) {
-            newHighScores[newHighScores.length = highScores[i]];
-        }
-        res.json(newHighScores);
-    }
+    // if (highScores.length < 10) {
+    //     res.json(highScores);
+    // }
+    // else {
+    //     for (i = 0; i < 10; i++) {
+    //         newHighScores[newHighScores.length = highScores[i]];
+    //     }
+    //     res.json(newHighScores);
+    // }
 
     
 });
