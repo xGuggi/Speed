@@ -102,6 +102,8 @@ export default function App() {
       }
       return deck;
     };
+
+   
   
     // Shuffle the full deck
     let localFullDeck = shuffleDeck([...fullDeck]);
