@@ -81,15 +81,13 @@ export default function App() {
 
   const handleDraw = (player) => {
     const drawnCard = fullDeck[0];
-  
+    setFullDeck(fullDeck.slice(1, fullDeck.length));
+
     if (player === 1) {
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     } else {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
-    console.log(fullDeck.length);
-    setFullDeck(fullDeck.slice(1, fullDeck.length));
-    console.log(fullDeck.length);
   };
 
   function Initialshuffle(event){
@@ -110,7 +108,6 @@ export default function App() {
   
 
   useEffect(() => {
-    //Initialshuffle(fullDeck);
     const shuffleDeck = (deck) => {
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -120,31 +117,42 @@ export default function App() {
     };
   
     // Shuffle the full deck
-    const shuffledDeck = shuffleDeck([...fullDeck]);
-
-    setFullDeck(shuffledDeck);
-
-    // Draw initial hands for both players
-    for (let i = 0; i < 5; i++) {
-      // handleDraw(1);
-      // handleDraw(2);
-      // console.log("Im here");
-      setPlayer1Hand(prevPlayer1Hand => {
-        const randomIndex = Math.floor(Math.random() * fullDeck.length);
-        const drawnCard = fullDeck[randomIndex];
-        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
-        return [...prevPlayer1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
-
-      });
+    let localFullDeck = shuffleDeck([...fullDeck]);
   
-      setPlayer2Hand(prevPlayer2Hand => {
-        const randomIndex = Math.floor(Math.random() * fullDeck.length);
-        const drawnCard = fullDeck[randomIndex];
-        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
-        return [...prevPlayer2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
-      });
+    // Draw initial hands for both players
+    let localPlayer1Hand = [...player1Hand];
+    let localPlayer2Hand = [...player2Hand];
+  
+    const handleDraw = (player) => {
+      const drawnCard = localFullDeck.shift();  // This mutates localFullDeck by removing the first element
+  
+      if (player === 1) {
+        localPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
+      } else {
+        localPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
+      }
+    };
+  
+    for (let i = 0; i < 5; i++) {
+      handleDraw(1);
+      handleDraw(2);
     }
-  }, []);
+
+
+    // Central piles
+    const centerL = localFullDeck.shift();  
+    const centerR = localFullDeck.shift();  
+
+
+
+    // Set the state at the end of all operations
+    setFullDeck(localFullDeck);
+    setPlayer1Hand(localPlayer1Hand);
+    setPlayer2Hand(localPlayer2Hand);
+    setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
+    setRightPile(`r-${centerR.rank}-${centerR.suit}`);
+    
+  }, []);  // Dependencies array is empty, so this runs only once
   
   
 
