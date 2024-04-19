@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { DndContext } from '@dnd-kit/core';
+import React, {useState, useEffect} from 'react';
+import {DndContext} from '@dnd-kit/core';
+
+import {Droppable} from './Droppable';
+import {Draggable} from './Draggable';
+import CardSVG from './CardSVG';
+import './App.css'
+
 import io from 'socket.io-client';
 
 import { Droppable } from './Droppable';
@@ -20,15 +26,87 @@ export default function App() {
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
 
+<<<<<<< HEAD
+=======
+    { rank: '2', suit: '♦' },
+    { rank: '3', suit: '♦' },
+    { rank: '4', suit: '♦' },
+    { rank: '5', suit: '♦' },
+    { rank: '6', suit: '♦' },
+    { rank: '7', suit: '♦' },
+    { rank: '8', suit: '♦' },
+    { rank: '9', suit: '♦' },
+    { rank: '10', suit: '♦' },
+    { rank: 'J', suit: '♦' },
+    { rank: 'Q', suit: '♦' },
+    { rank: 'K', suit: '♦' },
+    { rank: 'A', suit: '♦' },
+
+    { rank: '2', suit: '♣' },
+    { rank: '3', suit: '♣' },
+    { rank: '4', suit: '♣' },
+    { rank: '5', suit: '♣' },
+    { rank: '6', suit: '♣' },
+    { rank: '7', suit: '♣' },
+    { rank: '8', suit: '♣' },
+    { rank: '9', suit: '♣' },
+    { rank: '10', suit: '♣' },
+    { rank: 'J', suit: '♣' },
+    { rank: 'Q', suit: '♣' },
+    { rank: 'K', suit: '♣' },
+    { rank: 'A', suit: '♣' },
+
+    { rank: '2', suit: '♥' },
+    { rank: '3', suit: '♥' },
+    { rank: '4', suit: '♥' },
+    { rank: '5', suit: '♥' },
+    { rank: '6', suit: '♥' },
+    { rank: '7', suit: '♥' },
+    { rank: '8', suit: '♥' },
+    { rank: '9', suit: '♥' },
+    { rank: '10', suit: '♥' },
+    { rank: 'J', suit: '♥' },
+    { rank: 'Q', suit: '♥' },
+    { rank: 'K', suit: '♥' },
+    { rank: 'A', suit: '♥' },
+  ]);
+
+>>>>>>> 73c3f0bdb7337f8fe68dbd8a6ce63f8ea70d7b64
   const handleDraw = (player) => {
     if (player === 1) {
       setPlayer1Hand([...player1Hand, "h-1-♠"]);
     } else {
       setPlayer2Hand([...player2Hand, "h-1-♠"]);
     }
+<<<<<<< HEAD
   }
 
   function handleDragEnd(event) {
+=======
+  }
+
+  const handleStalemate = ()=> {
+    // GET NEW CARDS BEFORE SETTING
+    setLeftPile("l-" + "F" + "-" + "F");
+    setRightPile("r-" + "F" + "-" + "F");
+  }
+
+  useEffect(() => {
+    socket.on('id', (id) => {
+      //setName(id);
+      console.log(id); 
+    });
+    socket.emit('gameState', fullDeck);
+    console.log("insideUseEffect");
+  }, []);
+
+  socket.on('cards', (shuffledDeck) => {
+    setFullDeck(shuffledDeck);
+  })
+
+
+    function handleDragEnd(event) {
+>>>>>>> 73c3f0bdb7337f8fe68dbd8a6ce63f8ea70d7b64
     const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
@@ -46,8 +124,12 @@ export default function App() {
     } else if (event.over.id.split('-')[0] === "p2") {
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
     }
+<<<<<<< HEAD
   
     // Handle drop zones for piles
+=======
+
+>>>>>>> 73c3f0bdb7337f8fe68dbd8a6ce63f8ea70d7b64
     if (over.id.split('-')[0] === "l") {
       console.log(over.id.split('-')[1]);
       console.log(rank);
@@ -68,14 +150,26 @@ export default function App() {
       else {
         return;
       }
-      
     }
-
-    // HANDLE UPDATE HAND
-    const newHand = hand.filter(cardid => cardid !== cardID);
-    setHand(newHand);
-
-
+  
+    // Handle drop zones for piles
+    if (over.id.split('-')[0] === "l") {
+      setLeftPile("l-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "r") {
+      setRightPile("r-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "p2l") {
+      setLeftPile("p2l-" + rank + "-" + suit);
+    } else if (over.id.split('-')[0] === "p2r") {
+      setRightPile("p2r-" + rank + "-" + suit);
+    }
+  
+    // Update the state
+    setPlayer1Hand(updatedPlayer1Hand);
+    setPlayer2Hand(updatedPlayer2Hand);
+  
+    // Emit socket events if needed
+    // Modify according to your Socket.io implementation
+    socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
   }
 
 
@@ -93,12 +187,41 @@ export default function App() {
           );
         })}
       </div>
+<<<<<<< HEAD
       <Droppable key={leftPile} id={leftPile}>
         <CardSVG rank={leftPile.split('-')[1]} suit={leftPile.split('-')[2]} />
       </Droppable>
       <Droppable key={rightPile} id={rightPile}>
         <CardSVG rank={rightPile.split('-')[1]} suit={rightPile.split('-')[2]} />
       </Droppable>
+=======
+      <div className='CenterPiles'>
+        <button onClick={handleStalemate}>
+          <CardSVG rank="" suit="" />
+        </button>
+        <Droppable key={leftPile} id={leftPile}>
+          {(
+            () => {
+              const [_, rank, suit] = leftPile.split('-');
+              return  <CardSVG rank={rank} suit={suit}/>
+            }
+          )()}
+        </Droppable>
+
+        <Droppable key={rightPile} id={rightPile}>
+          {(
+            () => {
+              const [_, rank, suit] = rightPile.split('-');
+              return  <CardSVG rank={rank} suit={suit}/>
+            }
+          )()}        
+        </Droppable>
+        <button onClick={handleStalemate}>
+          <CardSVG rank="" suit="" />
+        </button>
+      </div>
+
+>>>>>>> 73c3f0bdb7337f8fe68dbd8a6ce63f8ea70d7b64
       <div>
         <h2>Player 2 Hand</h2>
         {player2Hand.map((cardid, index) => {
@@ -113,4 +236,8 @@ export default function App() {
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
     </DndContext>
   );
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 73c3f0bdb7337f8fe68dbd8a6ce63f8ea70d7b64
