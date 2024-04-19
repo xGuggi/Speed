@@ -84,7 +84,13 @@ io.on('connection', (socket) => {
     console.log(deck);
     io.emit('test', deck);
   })
-})
+});
+
+io.on('connection', (socket) => {
+  socket.on('initialState', (fullDeck, player1Hand, player2Hand, leftPile, rightPile) => {
+    io.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
+  });
+});
 
 
 io.on('connection', (socket) =>{

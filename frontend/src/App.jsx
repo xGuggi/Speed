@@ -143,7 +143,7 @@ export default function App() {
     setPlayer2Hand(localPlayer2Hand);
     setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
-    
+    socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
   }, []);  // Dependencies array is empty, so this runs only once
   
   
@@ -175,12 +175,20 @@ export default function App() {
     console.log(deck);
   })
 
+  socket.on('initialState', (fullDeck, player1Hand, player2Hand, leftPile, rightPile) => {
+    setFullDeck(fullDeck);
+    setPlayer1Hand(player1Hand);
+    setPlayer2Hand(player2Hand);
+    setLeftPile(leftPile);
+    setRightPile(rightPile);
+  })
+
   socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
     setLeftPile(leftPile);
     setRightPile(rightPile);
     setPlayer1Hand(player1Hand);
     setPlayer2Hand(player2Hand);
-  })
+  });
 
 
     function handleDragEnd(event) {
