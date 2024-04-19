@@ -22,7 +22,7 @@ const io = socketio(server, {
 }); //old
 
 dotenv.config(); //old
-const port = process.env.PORT || 5002; //was 5001 
+const port = process.env.PORT || 5001; //was 5001 
 let playerOneStash = [];
 let playerTwoStash = [];
 let playerOneHand = [];
