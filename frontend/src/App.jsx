@@ -81,16 +81,19 @@ export default function App() {
 
   const handleDraw = (player) => {
     const drawnCard = fullDeck[0];
-    setFullDeck(fullDeck.slice(1, fullDeck.length));
 
     if (player === 1) {
+      if (player1Hand.length >= 5) {
+        return;
+      } 
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     } else {
+      if (player2Hand.length >= 5) {
+        return;
+      } 
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
-    console.log(fullDeck.length);
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    console.log(fullDeck.length);
     socket.emit('test', updatedDeck);
   };
 
