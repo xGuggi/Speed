@@ -94,23 +94,6 @@ export default function App() {
     socket.emit('test', updatedDeck);
   };
 
-  function Initialshuffle(event){
-    shuffledArray = [];
-    usedIndexes = [];
-    let i = 0; 
-    while (i < event.length) {
-        let rando = Math.floor(Math.random() * event.length);
-        if (!usedIndexes.includes(rando))
-        {
-          shuffledArray.push(event[rando]);
-          usedIndexes.push(rando);
-          i++;
-        }
-    }
-    return shuffledArray;  
-  }
-  
-
   useEffect(() => {
     const shuffleDeck = (deck) => {
       for (let i = deck.length - 1; i > 0; i--) {
