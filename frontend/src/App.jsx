@@ -200,9 +200,9 @@ export default function App() {
 
 
 
-  const handleDraw = ()=> {
-    setHand([...hand, "h-" + fullDeck[15].rank + "-" + fullDeck[15].suit]);
-  }
+  // const handleDraw = ()=> {
+  //   setHand([...hand, "h-" + fullDeck[15].rank + "-" + fullDeck[15].suit]);
+  // }
 
   useEffect(() => {
     socket.on('id', (id) => {
