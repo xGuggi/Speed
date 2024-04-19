@@ -91,6 +91,7 @@ export default function App() {
     }
 
     setFullDeck(updatedDeck);
+    socket.emit('test', updatedDeck);
   };
 
   useEffect(() => {
@@ -131,6 +132,17 @@ export default function App() {
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
+  });
+
+  socket.on('test', (deck) => {
+    console.log(deck);
+  })
+
+  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
+    setLeftPile(leftPile);
+    setRightPile(rightPile);
+    setPlayer1Hand(player1Hand);
+    setPlayer2Hand(player2Hand);
   })
 
 

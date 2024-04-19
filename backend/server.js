@@ -58,8 +58,8 @@ function Initialshuffle(event){
 function stalemateShuffle(event){
   arrayToShuffle = event;
   staleMateShuffled = Initialshuffle(arrayToShuffle);
-  console.log("-----------StaleMate Shuffled------------");
-  console.log(staleMateShuffled);
+  //console.log("-----------StaleMate Shuffled------------");
+  //console.log(staleMateShuffled);
 }
 
 
@@ -76,31 +76,37 @@ app.get('/', (req, res) => {
 
 //Start server
 server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  //console.log(`Server running on port ${port}`);
 });
 
-
+io.on('connection', (socket) => {
+  socket.on('test', (deck) => {
+    console.log('Deck');
+    console.log(deck);
+    io.emit('test', deck);
+  })
+})
 
 
 io.on('connection', (socket) =>{
-socket.on('gameState', (fullDeck) =>{
-  console.log(fullDeck);
+  socket.on('gameState', (fullDeck) =>{
+  //console.log(fullDeck);
   Initialshuffle(fullDeck);
-  console.log(shuffledArray);
-  socket.emit('cards', shuffledArray);
+  //console.log(shuffledArray);
+  io.emit('cards', shuffledArray);
 });
 });
 
 io.on('connection', (socket) => {
   socket.on('staleMate', (staleMateCards) => {
-    console.log(staleMateCards);
+    //console.log(staleMateCards);
     stalemateShuffle(staleMateCards);
 
     // Send shuffled cards to frontend
 
     //leftCards(staleMateCards);
     //rightCards(staleMateCards);
-    console.log(staleMateCards);
+    //console.log(staleMateCards);
     socket.emit('receiveStalemate', staleMateCards);
   })
 })
@@ -110,7 +116,7 @@ io.on('connection', (socket) => {
 // Socket.IO
 io.on('connection', (socket) => {
 
-  console.log(`Socket ${socket.id} connected`);
+  //console.log(`Socket ${socket.id} connected`);
 
   if (playerOne === '')
   {
@@ -123,15 +129,20 @@ io.on('connection', (socket) => {
     io.to(socket.id).emit('id', playerTwo); 
   }
   socket.on('sendMessage', (message) => {
-    console.log(message);
+    //console.log(message);
     io.emit('message', message);
   });
+
+  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
+    socket.emit(leftPile, rightPile, player1Hand, player2Hand);
+  })
+
 //   socket.on('differentMessage', (message) => {
 //     io.emit('differentResponse', 'Whats up');
 //   });
 
   socket.on('disconnect', () => {
-    console.log(`Socket ${socket.id} disconnected`);
+    //console.log(`Socket ${socket.id} disconnected`);
     playerOne = '';
     playerTwo = '';
   });
@@ -144,7 +155,7 @@ app.listen(portTwo, () => {
   dbo.connectToServer(function (err) {
     if (err) console.error(err);
    });
-  console.log(`Server is running on port: ${portTwo}`);
+  //console.log(`Server is running on port: ${portTwo}`);
 });
 
 
