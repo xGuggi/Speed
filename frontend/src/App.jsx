@@ -80,28 +80,62 @@ export default function App() {
   ]);
 
   const handleDraw = (player) => {
-    const randomIndex = Math.floor(Math.random() * fullDeck.length);
-    const drawnCard = fullDeck[randomIndex];
-    const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
-
+    const drawnCard = fullDeck[0];
+  
     if (player === 1) {
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     } else {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
-
-    setFullDeck(updatedDeck);
+    console.log(fullDeck.length);
+    setFullDeck(fullDeck.slice(1, fullDeck.length));
+    console.log(fullDeck.length);
     socket.emit('test', updatedDeck);
   };
 
+  function Initialshuffle(event){
+    shuffledArray = [];
+    usedIndexes = [];
+    let i = 0; 
+    while (i < event.length) {
+        let rando = Math.floor(Math.random() * event.length);
+        if (!usedIndexes.includes(rando))
+        {
+          shuffledArray.push(event[rando]);
+          usedIndexes.push(rando);
+          i++;
+        }
+    }
+    return shuffledArray;  
+  }
+  
+
   useEffect(() => {
+    //Initialshuffle(fullDeck);
+    const shuffleDeck = (deck) => {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    };
+  
+    // Shuffle the full deck
+    const shuffledDeck = shuffleDeck([...fullDeck]);
+
+    setFullDeck(shuffledDeck);
+
     // Draw initial hands for both players
     for (let i = 0; i < 5; i++) {
+      // handleDraw(1);
+      // handleDraw(2);
+      // console.log("Im here");
       setPlayer1Hand(prevPlayer1Hand => {
         const randomIndex = Math.floor(Math.random() * fullDeck.length);
         const drawnCard = fullDeck[randomIndex];
         const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
         return [...prevPlayer1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
+
       });
   
       setPlayer2Hand(prevPlayer2Hand => {
@@ -116,9 +150,13 @@ export default function App() {
   
 
   const handleStalemate = ()=> {
+    const drawnCard = fullDeck[0];
+    const drawnCard2 = fullDeck[1];
+    setFullDeck(fullDeck.slice(2, fullDeck.length));
     // GET NEW CARDS BEFORE SETTING
-    setLeftPile("l-" + "F" + "-" + "F");
-    setRightPile("r-" + "F" + "-" + "F");
+    //[...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]
+    setLeftPile(`l-${drawnCard.rank}-${drawnCard.suit}`);
+    setRightPile(`r-${drawnCard2.rank}-${drawnCard2.suit}`);
   }
 
   useEffect(() => {
