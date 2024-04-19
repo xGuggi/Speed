@@ -167,8 +167,23 @@ export default function App() {
     console.log("insideUseEffect");
   }, []);
 
+  //function press button or when we detect a drop event 
+
+
+  useEffect(() => {
+    
+    console.log("this is a test");
+  }, [player1Hand, player2Hand, leftPile, rightPile]);
+
+
+
+  socket.on('newCards', (shuffledDleftPile, rightPile, player1Hand, player2Handeck) => {
+    
+  });
+
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
+    
   });
 
   socket.on('test', (deck) => {
@@ -250,6 +265,8 @@ export default function App() {
     // Emit socket events if needed
     // Modify according to your Socket.io implementation
     socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
+    socket.emit('updateGame', { leftPile, rightPile, player1Hand, player2Hand});
+
   }
 
 

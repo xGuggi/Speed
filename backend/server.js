@@ -102,6 +102,14 @@ io.on('connection', (socket) =>{
 });
 });
 
+
+io.on('connection', (socket) =>{
+  socket.on('updateGame', (leftPile, rightPile, player1Hand, player2Hand) =>{
+  
+  io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile);
+});
+});
+
 io.on('connection', (socket) => {
   socket.on('staleMate', (staleMateCards) => {
     //console.log(staleMateCards);
