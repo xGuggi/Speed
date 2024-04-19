@@ -131,7 +131,7 @@ export default function App() {
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
-  })
+  });
 
 
     function handleDragEnd(event) {
