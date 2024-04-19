@@ -88,6 +88,10 @@ export default function App() {
     } else {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
+    console.log(fullDeck.length);
+    setFullDeck(fullDeck.slice(1, fullDeck.length));
+    console.log(fullDeck.length);
+    socket.emit('test', updatedDeck);
   };
 
   function Initialshuffle(event){
@@ -177,6 +181,17 @@ export default function App() {
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
+  });
+
+  socket.on('test', (deck) => {
+    console.log(deck);
+  })
+
+  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
+    setLeftPile(leftPile);
+    setRightPile(rightPile);
+    setPlayer1Hand(player1Hand);
+    setPlayer2Hand(player2Hand);
   })
 
 
