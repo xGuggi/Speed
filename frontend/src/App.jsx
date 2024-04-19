@@ -17,8 +17,8 @@ const socket = io('http://localhost:5001', {
 });
 
 export default function App() {
-  const [player1Hand, setPlayer1Hand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
-  const [player2Hand, setPlayer2Hand] = useState(["h-5-♠","h-6-♦","h-7-♣","h-8-♥"]);
+  const [player1Hand, setPlayer1Hand] = useState([]);
+  const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [fullDeck, setFullDeck] = useState([
@@ -79,108 +79,40 @@ export default function App() {
     { rank: 'A', suit: '♥' },
   ]);
 
-  let shuffledDeck = [];
-  let leftDisregard = [];
-  let rightDisregard = [];
-  let playerOneStash = [];
-  let playerTwoStash = [];
-  let playerOneHand = [];
-  let playerTwoHand = [];
-  let leftDeck = [];
-  let rightDeck = [];
-  ///////////////////logic////////////////////////
-  function checkIfNone(event) {
-    let playerOneRank;
-    let playerTwoRank;
-    let playable = false; 
-    leftDisRank = parseInt(leftDisregard[0].rank);
-    rightDisRank = parseInt(rightDisregard[0].rank);
-    for (let i = 0; i < playerOneHand.length; i++)
-    {
-      switch(playerOneHand[i].rank) 
-      {
-        case 'A':
-          playerOneRank = 14;
-          break;
-        case 'K':
-          playerOneRank = 13;
-          break;
-        case 'Q':
-          playerOneRank = 12;
-          break;
-        case 'J':
-          playerOneRank = 11;
-          break;
-        default:
-          playerOneRank = parseInt(playerOneHand[i].rank);
-          break;
-      }
-      if ((playerOneRank === 14 && leftDisRank === 2) ||(playerOneRank === 14 && rightDisRank === 2))
-      {
-        playable = true;
-      }
-      else if ((playerOneRank === leftDisRank - 1) || (playerOneRank === leftDisRank + 1) || (playerOneRank === rightDisRank + 1) || (playerOneRank === rightDisRank - 1))
-      {
-        playable = true;
-      }
-    }
-    for (let i = 0; i < playerTwoHand.length; i++)
-    {
-      switch(playerTwoHand[i].rank) 
-      {
-        case 'A':
-          playerTwoRank = 14;
-          break;
-        case 'K':
-          playerTwoRank = 13;
-          break;
-        case 'Q':
-          playerTwoRank = 12;
-          break;
-        case 'J':
-          playerTwoRank = 11;
-          break;
-        default:
-          playerTwoRank = parseInt(playerTwoHand[i].rank);
-          break;
-      }
-      if ((playerTwoRank === 14 && leftDisRank === 2) ||(playerTwoRank === 14 && rightDisRank === 2))
-      {
-        playable = true;
-      }
-      else if ((playerTwoRank === leftDisRank - 1) || (playerTwoRank === leftDisRank + 1) || (playerTwoRank === rightDisRank + 1) || (playerTwoRank === rightDisRank - 1))
-      {
-        playable = true;
-      }
-    }
-    return playable; 
-  }
+  const handleDraw = (player) => {
+    const randomIndex = Math.floor(Math.random() * fullDeck.length);
+    const drawnCard = fullDeck[randomIndex];
+    const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
 
+    if (player === 1) {
+      setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+    } else {
+      setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+    }
 
+    setFullDeck(updatedDeck);
+  };
 
-  function popForOne(event){
-    if (!playerOneStash.length)
-    {
-      return;
+  useEffect(() => {
+    // Draw initial hands for both players
+    for (let i = 0; i < 5; i++) {
+      setPlayer1Hand(prevPlayer1Hand => {
+        const randomIndex = Math.floor(Math.random() * fullDeck.length);
+        const drawnCard = fullDeck[randomIndex];
+        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
+        return [...prevPlayer1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
+      });
+  
+      setPlayer2Hand(prevPlayer2Hand => {
+        const randomIndex = Math.floor(Math.random() * fullDeck.length);
+        const drawnCard = fullDeck[randomIndex];
+        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
+        return [...prevPlayer2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
+      });
     }
-    else if (playerOneHand.length < 4)
-    {
-      playerOneHand.push(playerOneStash[0]);
-      playerOneStash.shift();
-    }
-  }
-
-  function popForTwo(event){
-    if (!playerTwoStash.length)
-    {
-      return;
-    }
-    else if (playerTwoHand.length < 4)
-    {
-      playerTwoHand.push(playerTwoStash[0]);
-      playerTwoStash.shift();
-    }
-  }
+  }, []);
+  
+  
 
   function populateOneHand(event){
     z = 0;
