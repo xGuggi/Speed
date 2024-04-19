@@ -21,7 +21,7 @@ speedRoutes.post("/setHighScore", async(req, res) => {
 });
 
 
-hangRoutes.get("/getHighScores/:numLetters", async(req, res) => {
+speedRoutes.get("/getHighScores/:numLetters", async(req, res) => {
     const db_connect = await dbo.getDb();
     const numLetters = parseInt(req.params.numLetters);
 
