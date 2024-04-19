@@ -17,8 +17,8 @@ const socket = io('http://localhost:5001', {
 });
 
 export default function App() {
-  const [player1Hand, setPlayer1Hand] = useState(["h-1-♠","h-2-♦","h-3-♣","h-4-♥"]);
-  const [player2Hand, setPlayer2Hand] = useState(["h-5-♠","h-6-♦","h-7-♣","h-8-♥"]);
+  const [player1Hand, setPlayer1Hand] = useState([]);
+  const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [fullDeck, setFullDeck] = useState([
@@ -80,12 +80,39 @@ export default function App() {
   ]);
 
   const handleDraw = (player) => {
+    const randomIndex = Math.floor(Math.random() * fullDeck.length);
+    const drawnCard = fullDeck[randomIndex];
+    const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
+
     if (player === 1) {
-      setPlayer1Hand([...player1Hand, "h-1-♠"]);
+      setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     } else {
-      setPlayer2Hand([...player2Hand, "h-1-♠"]);
+      setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
-  }
+
+    setFullDeck(updatedDeck);
+  };
+
+  useEffect(() => {
+    // Draw initial hands for both players
+    for (let i = 0; i < 5; i++) {
+      setPlayer1Hand(prevPlayer1Hand => {
+        const randomIndex = Math.floor(Math.random() * fullDeck.length);
+        const drawnCard = fullDeck[randomIndex];
+        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
+        return [...prevPlayer1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
+      });
+  
+      setPlayer2Hand(prevPlayer2Hand => {
+        const randomIndex = Math.floor(Math.random() * fullDeck.length);
+        const drawnCard = fullDeck[randomIndex];
+        const updatedDeck = [...fullDeck.slice(0, randomIndex), ...fullDeck.slice(randomIndex + 1)];
+        return [...prevPlayer2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`];
+      });
+    }
+  }, []);
+  
+  
 
   const handleStalemate = ()=> {
     // GET NEW CARDS BEFORE SETTING
