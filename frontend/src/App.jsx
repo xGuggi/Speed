@@ -292,8 +292,9 @@ export default function App() {
 
     // Emit socket events if needed
     // Modify according to your Socket.io implementation
-    socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
-    socket.emit('updateGame', { leftPile, rightPile, player1Hand, player2Hand });
+    //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
+    console.log("player1Hand" + player1Hand);
+    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand );
 
   }
 
