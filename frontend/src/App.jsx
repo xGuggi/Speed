@@ -26,6 +26,7 @@ export default function App() {
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [open, setOpen] = useState(false); //this is used for the modal 
+  const [winner, setWinner] = useState(0); //this is used for the winner
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -87,11 +88,31 @@ export default function App() {
   // Function to check if a player's hand is empty
   const isHandEmpty = (player) => {
     if (player === 1) {
-      return player1Hand.length === 0;
+      if (!player1Hand.length){
+        setWinner(1);
+        return true; 
+      }
     } else {
-      return player2Hand.length === 0;
+        if (!player2Hand.length){
+          setWinner(2);
+          return true;
+        }
     }
   };
+
+  useEffect(() => {
+    const endGame = () =>{
+      setTimeout(() => {
+      }, popUpModal, 5000);
+    };
+    endGame();
+  }, [winner]);
+
+  const popUpModal = async () =>
+  {
+    setOpen(true);
+  }
+
 
   // Function to handle win condition
   const checkWinCondition = () => {
@@ -123,6 +144,9 @@ export default function App() {
     socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
+
+
+  
   useEffect(() => {
     const shuffleDeck = (deck) => {
       for (let i = deck.length - 1; i > 0; i--) {
@@ -131,6 +155,8 @@ export default function App() {
       }
       return deck;
     };
+
+    
 
 
 
@@ -294,13 +320,6 @@ export default function App() {
 
   }
 
-
-
-
-
-
-
-
 const handleClose = async () =>
 {
     setOpen(false);
@@ -313,22 +332,6 @@ const handleClose = async () =>
         setTest(true);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -390,7 +393,7 @@ const handleClose = async () =>
 
       {gameOver && (
       <div className="win-message">
-        {isHandEmpty(1) ? "Player 1 wins!" : "Player 2 wins!"}
+        {isHandEmpty(1) ? "" : "Player " + winner + "wins!"} 
       </div>
       )}
     </DndContext>
