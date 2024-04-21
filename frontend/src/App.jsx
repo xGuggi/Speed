@@ -199,7 +199,9 @@ export default function App() {
       setPlayer1Hand(player1Hand);
       console.log(player1Hand);
       setPlayer2Hand(player2Hand);
+      console.log("leftpile" + leftPile);
       setLeftPile(leftPile);
+      console.log("rightPile" + rightPile);
       setRightPile(rightPile);
       SetStateCheck(!stateCheck);
     });
@@ -241,6 +243,8 @@ export default function App() {
     // Remove the card from the appropriate player's hand
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
+    let updatedLeftPile = leftPile;
+    let updatedRightPile = rightPile;
 
     if (event.over.id.split('-')[0] === "l" || event.over.id.split('-')[0] === "r" ||
       event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
@@ -277,15 +281,29 @@ export default function App() {
 
     // Handle drop zones for piles
     if (over.id.split('-')[0] === "l") {
+      console.log(over.id.split('-')[0]);
+      console.log("rank" + rank);
       setLeftPile("l-" + rank + "-" + suit);
+      updatedLeftPile = ("l-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "r") {
+      console.log(over.id.split('-')[0]);
+      console.log("rank" + rank);
       setRightPile("r-" + rank + "-" + suit);
+      updatedRightPile = ("r-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "p2l") {
+      console.log(over.id.split('-')[0]);
+      console.log("rank" + rank);
       setLeftPile("p2l-" + rank + "-" + suit);
+      updatedLeftPile = ("p2l-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "p2r") {
+      console.log(over.id.split('-')[0]);
+      console.log("rank" + rank);
       setRightPile("p2r-" + rank + "-" + suit);
+      updatedRightPile = ("p2r-" + rank + "-" + suit);
     }
 
+    console.log("updatedleftPIle" + updatedLeftPile);
+    console.log("updateRightPiple" + updatedRightPile);
     // Update the state
     setPlayer1Hand(updatedPlayer1Hand);
     setPlayer2Hand(updatedPlayer2Hand);
@@ -294,9 +312,8 @@ export default function App() {
     // Modify according to your Socket.io implementation
     //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
     console.log("player1Hand" + player1Hand);
-    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand );
-
-  }
+    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand );
+    }
 
 
 
