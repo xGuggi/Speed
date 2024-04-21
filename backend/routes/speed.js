@@ -41,6 +41,7 @@ speedRoutes.get("/getScores", async(req, res) => {
     //     res.json(newHighScores);
     // }
 
+
     
 });
 
