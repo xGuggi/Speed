@@ -385,6 +385,9 @@ const handleClose = async () =>
         
       </div>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+      <button onClick={() => setOpen(true)}>History</button>
+      <Modal open = {open} onClose={handleClose} />
+
       {gameOver && (
       <div className="win-message">
         {isHandEmpty(1) ? "Player 1 wins!" : "Player 2 wins!"}
