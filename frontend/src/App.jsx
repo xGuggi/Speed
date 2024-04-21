@@ -107,6 +107,7 @@ export default function App() {
         return;
       }
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      console.log(player1Hand);
     } else {
       if (player2Hand.length >= 5) {
         return;
@@ -114,7 +115,8 @@ export default function App() {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
+    console.log("player1Hand in handle draw" + player1Hand);
+    //socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
   useEffect(() => {
@@ -192,6 +194,7 @@ export default function App() {
     socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile) => {
       console.log("Inside socket new cards");
       setPlayer1Hand(player1Hand);
+      console.log(player1Hand);
       setPlayer2Hand(player2Hand);
       setLeftPile(leftPile);
       setRightPile(rightPile);
