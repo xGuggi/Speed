@@ -92,9 +92,11 @@ export default function App() {
   // Function to handle win condition
   const checkWinCondition = () => {
     if (isHandEmpty(1)) {
+      console.log("Player wins");
       setGameOver(true); // Player 1 wins
     } else if (isHandEmpty(2)) {
       setGameOver(true); // Player 2 wins
+      console.log("Player wins");
     }
   };
 
@@ -113,6 +115,7 @@ export default function App() {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
+    checkWinCondition();
     socket.emit('test', updatedDeck);
   };
 
@@ -154,19 +157,15 @@ export default function App() {
     const centerL = localFullDeck.shift();  
     const centerR = localFullDeck.shift();  
 
-
-
     // Set the state at the end of all operations
     setFullDeck(localFullDeck);
     setPlayer1Hand(localPlayer1Hand);
     setPlayer2Hand(localPlayer2Hand);
     setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
-    socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
+    //socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
   }, []);  // Dependencies array is empty, so this runs only once
   
-  
-
   const handleStalemate = ()=> {
     const drawnCard = fullDeck[0];
     const drawnCard2 = fullDeck[1];
@@ -178,6 +177,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    checkWinCondition();
     socket.on('id', (id) => {
       //setName(id);
       console.log(id); 
@@ -230,7 +230,6 @@ export default function App() {
     const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
-  
     // Remove the card from the appropriate player's hand
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
@@ -343,6 +342,11 @@ export default function App() {
         })}
       </div>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+      {gameOver && (
+      <div className="win-message">
+        {isHandEmpty(1) ? "Player 1 wins!" : "Player 2 wins!"}
+      </div>
+      )}
     </DndContext>
   );
 };
