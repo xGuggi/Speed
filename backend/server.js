@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
 
   socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
     socket.emit(leftPile, rightPile, player1Hand, player2Hand);
-  })
+  });
 
 //   socket.on('differentMessage', (message) => {
 //     io.emit('differentResponse', 'Whats up');
