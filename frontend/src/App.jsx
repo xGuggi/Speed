@@ -114,7 +114,7 @@ export default function App() {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    //socket.emit('test', updatedDeck);
+    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
   useEffect(() => {
@@ -198,9 +198,9 @@ export default function App() {
       SetStateCheck(!stateCheck);
     });
 
-    useEffect(({stateCheck}) => {
-      console.log('Inisde state check useEffect');
-    }, [stateCheck])
+    // useEffect(() => {
+    //   console.log('Inisde state check useEffect');
+    // })
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
