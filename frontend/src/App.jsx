@@ -7,6 +7,8 @@ import CardSVG from './CardSVG';
 import './App.css'
 
 import io from 'socket.io-client';
+import Modal from './history';
+
 
 const socket = io('http://localhost:5001', {
   withCredentials: true,
@@ -23,6 +25,7 @@ export default function App() {
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
+  const [open, setOpen] = useState(false); //this is used for the modal 
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -163,7 +166,7 @@ export default function App() {
     setPlayer2Hand(localPlayer2Hand);
     setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
-    socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
+    //socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
   }, []);  // Dependencies array is empty, so this runs only once
 
 
@@ -198,7 +201,7 @@ export default function App() {
       SetStateCheck(!stateCheck);
     });
 
-    useEffect(({stateCheck}) => {
+    useEffect(() => {
       console.log('Inisde state check useEffect');
     }, [stateCheck])
 
@@ -292,6 +295,43 @@ export default function App() {
   }
 
 
+
+
+
+
+
+
+const handleClose = async () =>
+{
+    setOpen(false);
+    if (test === true)
+    {
+        setTest(false);
+    }
+    else if (test === false)
+    {
+        setTest(true);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div>
@@ -342,8 +382,15 @@ export default function App() {
             </Draggable>
           );
         })}
+        
       </div>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+
+      <button onClick={() => setOpen(true)}>Player History</button>
+      <Modal open = {open} onClose={handleClose} />
+
+
     </DndContext>
   );
+  
 };
