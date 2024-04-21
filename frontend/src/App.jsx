@@ -133,6 +133,7 @@ export default function App() {
         return;
       }
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      console.log(player1Hand);
     } else {
       if (player2Hand.length >= 5) {
         return;
@@ -141,7 +142,8 @@ export default function App() {
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
     checkWinCondition();
-    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
+    console.log("player1Hand in handle draw" + player1Hand);
+    //socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
 
@@ -221,6 +223,7 @@ export default function App() {
     socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile) => {
       console.log("Inside socket new cards");
       setPlayer1Hand(player1Hand);
+      console.log(player1Hand);
       setPlayer2Hand(player2Hand);
       setLeftPile(leftPile);
       setRightPile(rightPile);
@@ -315,8 +318,9 @@ export default function App() {
 
     // Emit socket events if needed
     // Modify according to your Socket.io implementation
-    socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
-    socket.emit('updateGame', { leftPile, rightPile, player1Hand, player2Hand });
+    //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
+    console.log("player1Hand" + player1Hand);
+    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand );
 
   }
 

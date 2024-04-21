@@ -107,6 +107,7 @@ io.on('connection', (socket) =>{
   socket.on('updateGame', (leftPile, rightPile, player1Hand, player2Hand) =>{
   
     console.log('inside new cards connection');
+    console.log('player1Hand' + player1Hand);
   io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile);
 });
 });
