@@ -17,6 +17,7 @@ const socket = io('http://localhost:5001', {
 });
 
 export default function App() {
+  const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
@@ -78,6 +79,24 @@ export default function App() {
     { rank: 'K', suit: '♥' },
     { rank: 'A', suit: '♥' },
   ]);
+
+  // Function to check if a player's hand is empty
+  const isHandEmpty = (player) => {
+    if (player === 1) {
+      return player1Hand.length === 0;
+    } else {
+      return player2Hand.length === 0;
+    }
+  };
+
+  // Function to handle win condition
+  const checkWinCondition = () => {
+    if (isHandEmpty(1)) {
+      setGameOver(true); // Player 1 wins
+    } else if (isHandEmpty(2)) {
+      setGameOver(true); // Player 2 wins
+    }
+  };
 
   const handleDraw = (player) => {
     const drawnCard = fullDeck[0];
@@ -226,28 +245,29 @@ export default function App() {
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
     }
 
-    if (over.id.split('-')[0] === "l") {
-      console.log(over.id.split('-')[1]);
-      console.log(rank);
-      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
-        setLeftPile("l-" + rank + "-" + suit);
-        console.log(over.id);
-      }
-      else {
-        return;
-      }
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-    }
-    // HANDLE OVER RIGHT PILE
-    else if (over.id.split('-')[0] === "r") {
-      if (parseInt(over.id.split('-')[1])-1 == parseInt(rank) || parseInt(over.id.split('-')[1])+1 == parseInt(rank)) {
-        setRightPile("r-" + rank + "-" + suit);
+    // Find the index of the rank in the ranks array
+    const rankIndex = ranks.indexOf(rank);
+    
+    if (over.id.split('-')[0] === "l" || over.id.split('-')[0] === "r" ||
+        event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
+      if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
+      } else {
+        return; 
       }
-      else {
-        return;
+    } else if (event.over.id.split('-')[0] === "p1") {
+      if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
+      } else {
+        return; 
+      }
+    } else if (event.over.id.split('-')[0] === "p2") {
+      if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
+      } else {
+        return; 
       }
     }
-  
+    
     // Handle drop zones for piles
     if (over.id.split('-')[0] === "l") {
       setLeftPile("l-" + rank + "-" + suit);
