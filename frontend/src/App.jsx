@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {DndContext} from '@dnd-kit/core';
+import React, { useState, useEffect } from 'react';
+import { DndContext } from '@dnd-kit/core';
 
-import {Droppable} from './Droppable';
-import {Draggable} from './Draggable';
+import { Droppable } from './Droppable';
+import { Draggable } from './Draggable';
 import CardSVG from './CardSVG';
 import './App.css'
 
@@ -17,6 +17,7 @@ const socket = io('http://localhost:5001', {
 });
 
 export default function App() {
+  const [stateCheck, SetStateCheck] = useState('true');
   const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
   const [player2Hand, setPlayer2Hand] = useState([]);
@@ -106,17 +107,17 @@ export default function App() {
     if (player === 1) {
       if (player1Hand.length >= 5) {
         return;
-      } 
+      }
       setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     } else {
       if (player2Hand.length >= 5) {
         return;
-      } 
+      }
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
     checkWinCondition();
-    socket.emit('test', updatedDeck);
+    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
   useEffect(() => {
@@ -128,25 +129,25 @@ export default function App() {
       return deck;
     };
 
-   
-  
+
+
     // Shuffle the full deck
     let localFullDeck = shuffleDeck([...fullDeck]);
-  
+
     // Draw initial hands for both players
     let localPlayer1Hand = [...player1Hand];
     let localPlayer2Hand = [...player2Hand];
-  
+
     const handleDraw = (player) => {
       const drawnCard = localFullDeck.shift();  // This mutates localFullDeck by removing the first element
-  
+
       if (player === 1) {
         localPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       } else {
         localPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       }
     };
-  
+
     for (let i = 0; i < 5; i++) {
       handleDraw(1);
       handleDraw(2);
@@ -180,7 +181,7 @@ export default function App() {
     checkWinCondition();
     socket.on('id', (id) => {
       //setName(id);
-      console.log(id); 
+      console.log(id);
     });
     socket.emit('gameState', fullDeck);
     console.log("insideUseEffect");
@@ -188,22 +189,22 @@ export default function App() {
 
   //function press button or when we detect a drop event 
 
+    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile) => {
+      console.log("Inside socket new cards");
+      setPlayer1Hand(player1Hand);
+      setPlayer2Hand(player2Hand);
+      setLeftPile(leftPile);
+      setRightPile(rightPile);
+      SetStateCheck(!stateCheck);
+    });
 
-  useEffect(() => {
-    
-    console.log("this is a test");
-  }, [player1Hand, player2Hand, leftPile, rightPile]);
-
-
-
-
-  socket.on('newCards', (shuffledDleftPile, rightPile, player1Hand, player2Handeck) => {
-    
-  });
+    // useEffect(() => {
+    //   console.log('Inisde state check useEffect');
+    // })
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
-    
+
   });
 
   socket.on('test', (deck) => {
@@ -226,16 +227,17 @@ export default function App() {
   });
 
 
-    function handleDragEnd(event) {
+  function handleDragEnd(event) {
     const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
+
     // Remove the card from the appropriate player's hand
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
-  
+
     if (event.over.id.split('-')[0] === "l" || event.over.id.split('-')[0] === "r" ||
-        event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
+      event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
       updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
     } else if (event.over.id.split('-')[0] === "p1") {
@@ -248,25 +250,25 @@ export default function App() {
 
     // Find the index of the rank in the ranks array
     const rankIndex = ranks.indexOf(rank);
-    
+
     if (over.id.split('-')[0] === "l" || over.id.split('-')[0] === "r" ||
-        event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
+      event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
       if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
       } else {
-        return; 
+        return;
       }
     } else if (event.over.id.split('-')[0] === "p1") {
       if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
       } else {
-        return; 
+        return;
       }
     } else if (event.over.id.split('-')[0] === "p2") {
       if (['A', 'K'].includes(rank) || Math.abs(rankIndex - ranks.indexOf(over.id.split('-')[1])) === 1) {
       } else {
-        return; 
+        return;
       }
     }
-    
+
     // Handle drop zones for piles
     if (over.id.split('-')[0] === "l") {
       setLeftPile("l-" + rank + "-" + suit);
@@ -277,15 +279,15 @@ export default function App() {
     } else if (over.id.split('-')[0] === "p2r") {
       setRightPile("p2r-" + rank + "-" + suit);
     }
-  
+
     // Update the state
     setPlayer1Hand(updatedPlayer1Hand);
     setPlayer2Hand(updatedPlayer2Hand);
-  
+
     // Emit socket events if needed
     // Modify according to your Socket.io implementation
     socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
-    socket.emit('updateGame', { leftPile, rightPile, player1Hand, player2Hand});
+    socket.emit('updateGame', { leftPile, rightPile, player1Hand, player2Hand });
 
   }
 
@@ -312,7 +314,7 @@ export default function App() {
           {(
             () => {
               const [_, rank, suit] = leftPile.split('-');
-              return  <CardSVG rank={rank} suit={suit}/>
+              return <CardSVG rank={rank} suit={suit} />
             }
           )()}
         </Droppable>
@@ -321,9 +323,9 @@ export default function App() {
           {(
             () => {
               const [_, rank, suit] = rightPile.split('-');
-              return  <CardSVG rank={rank} suit={suit}/>
+              return <CardSVG rank={rank} suit={suit} />
             }
-          )()}        
+          )()}
         </Droppable>
         <button onClick={handleStalemate}>
           <CardSVG rank="" suit="" />

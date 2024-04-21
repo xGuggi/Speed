@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 
 //Start server
 server.listen(port, () => {
-  //console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
 io.on('connection', (socket) => {
@@ -106,6 +106,7 @@ io.on('connection', (socket) =>{
 io.on('connection', (socket) =>{
   socket.on('updateGame', (leftPile, rightPile, player1Hand, player2Hand) =>{
   
+    console.log('inside new cards connection');
   io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile);
 });
 });
