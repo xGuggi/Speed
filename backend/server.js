@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 
 //Start server
 server.listen(port, () => {
-  //console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
 io.on('connection', (socket) => {
