@@ -96,9 +96,11 @@ export default function App() {
   // Function to handle win condition
   const checkWinCondition = () => {
     if (isHandEmpty(1)) {
+      console.log("Player wins");
       setGameOver(true); // Player 1 wins
     } else if (isHandEmpty(2)) {
       setGameOver(true); // Player 2 wins
+      console.log("Player wins");
     }
   };
 
@@ -117,7 +119,8 @@ export default function App() {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    //socket.emit('test', updatedDeck);
+    checkWinCondition();
+    socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
 
   useEffect(() => {
@@ -155,10 +158,8 @@ export default function App() {
 
 
     // Central piles
-    const centerL = localFullDeck.shift();
-    const centerR = localFullDeck.shift();
-
-
+    const centerL = localFullDeck.shift();  
+    const centerR = localFullDeck.shift();  
 
     // Set the state at the end of all operations
     setFullDeck(localFullDeck);
@@ -168,10 +169,8 @@ export default function App() {
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
     //socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
   }, []);  // Dependencies array is empty, so this runs only once
-
-
-
-  const handleStalemate = () => {
+  
+  const handleStalemate = ()=> {
     const drawnCard = fullDeck[0];
     const drawnCard2 = fullDeck[1];
     setFullDeck(fullDeck.slice(2, fullDeck.length));
@@ -182,6 +181,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    checkWinCondition();
     socket.on('id', (id) => {
       //setName(id);
       console.log(id);
@@ -201,9 +201,9 @@ export default function App() {
       SetStateCheck(!stateCheck);
     });
 
-    useEffect(() => {
-      console.log('Inisde state check useEffect');
-    }, [stateCheck])
+    // useEffect(() => {
+    //   console.log('Inisde state check useEffect');
+    // })
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
@@ -385,11 +385,11 @@ const handleClose = async () =>
         
       </div>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
-
-      <button onClick={() => setOpen(true)}>Player History</button>
-      <Modal open = {open} onClose={handleClose} />
-
-
+      {gameOver && (
+      <div className="win-message">
+        {isHandEmpty(1) ? "Player 1 wins!" : "Player 2 wins!"}
+      </div>
+      )}
     </DndContext>
   );
   
