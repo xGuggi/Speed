@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 
 
-
-
 const Modal = ({open, onClose}) => {
-    const [selectedAccount, setSelectedAccount] = useState('');
 
     if (!open) return null; 
 
@@ -57,14 +54,6 @@ const Modal = ({open, onClose}) => {
                     <p onClick={onClose} className="txt">X</p>
                     <br></br>
                     <h1>History</h1>
-                    <div classname="input">
-                        <input type="radio" id="checking" name="selected_account" value="checking" onChange={handleAccountChange} />
-                        <label htmlFor="checking">Checking</label>
-                        <input type="radio" id="savings" name="selected_account" value="savings" onChange={handleAccountChange} />
-                        <label htmlFor="savings">Savings</label>
-                        <input type="radio" id="yield" name="selected_account" value="yield" onChange={handleAccountChange} />
-                        <label htmlFor="yield">High Yield</label>
-                    </div>
                 </div>
             </div>
     );
