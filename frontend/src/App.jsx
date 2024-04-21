@@ -189,10 +189,7 @@ export default function App() {
   //function press button or when we detect a drop event 
 
 
-  useEffect(() => {
-    
-    console.log("this is a test");
-  }, [player1Hand, player2Hand, leftPile, rightPile]);
+ 
 
 
 
