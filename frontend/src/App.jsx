@@ -150,14 +150,14 @@ export default function App() {
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
     if (player === 1) {
-      if (player1Hand.length >= 5) {
+      if (player1Hand.length >= 5 || p1Draws == 0) {
         return;
       }
       //setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
       updatedPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       console.log(player1Hand);
     } else {
-      if (player2Hand.length >= 5) {
+      if (player2Hand.length >= 5 || p2Draws == 0) {
         return;
       }
       //setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
