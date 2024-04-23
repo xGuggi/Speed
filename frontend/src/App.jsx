@@ -127,23 +127,26 @@ export default function App() {
 
   const handleDraw = (player) => {
     const drawnCard = fullDeck[0];
-
+    let updatedPlayer1Hand = [...player1Hand];
+    let updatedPlayer2Hand = [...player2Hand];
     if (player === 1) {
       if (player1Hand.length >= 5) {
         return;
       }
-      setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      //setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      updatedPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       console.log(player1Hand);
     } else {
       if (player2Hand.length >= 5) {
         return;
       }
-      setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      //setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
+      updatedPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
     checkWinCondition();
     console.log("player1Hand in handle draw" + player1Hand);
-    //socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
+    socket.emit('updateHands', updatedPlayer1Hand, updatedPlayer2Hand);
   };
 
 
@@ -195,7 +198,7 @@ export default function App() {
     setPlayer2Hand(localPlayer2Hand);
     setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
-    //socket.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
+    socket.emit('initialState', localFullDeck, localPlayer1Hand, localPlayer2Hand, `l-${centerL.rank}-${centerL.suit}`, `r-${centerR.rank}-${centerR.suit}`);
   }, []);  // Dependencies array is empty, so this runs only once
   
   const handleStalemate = ()=> {
@@ -232,6 +235,12 @@ export default function App() {
       SetStateCheck(!stateCheck);
     });
 
+    socket.on('newHands', (player1Hand, player2Hand) => {
+      setPlayer1Hand(player1Hand);
+      setPlayer2Hand(player2Hand);
+      SetStateCheck(!stateCheck);
+    });
+
     // useEffect(() => {
     //   console.log('Inisde state check useEffect');
     // })
@@ -251,7 +260,7 @@ export default function App() {
     setPlayer2Hand(player2Hand);
     setLeftPile(leftPile);
     setRightPile(rightPile);
-  })
+  });
 
   socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
     setLeftPile(leftPile);
@@ -307,32 +316,18 @@ export default function App() {
 
     // Handle drop zones for piles
     if (over.id.split('-')[0] === "l") {
-      console.log(over.id.split('-')[0]);
-      console.log("rank" + rank);
-      setLeftPile("l-" + rank + "-" + suit);
       updatedLeftPile = ("l-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "r") {
-      console.log(over.id.split('-')[0]);
-      console.log("rank" + rank);
-      setRightPile("r-" + rank + "-" + suit);
       updatedRightPile = ("r-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "p2l") {
-      console.log(over.id.split('-')[0]);
-      console.log("rank" + rank);
-      setLeftPile("p2l-" + rank + "-" + suit);
       updatedLeftPile = ("p2l-" + rank + "-" + suit);
     } else if (over.id.split('-')[0] === "p2r") {
-      console.log(over.id.split('-')[0]);
-      console.log("rank" + rank);
-      setRightPile("p2r-" + rank + "-" + suit);
       updatedRightPile = ("p2r-" + rank + "-" + suit);
     }
 
     console.log("updatedleftPIle" + updatedLeftPile);
     console.log("updateRightPiple" + updatedRightPile);
     // Update the state
-    setPlayer1Hand(updatedPlayer1Hand);
-    setPlayer2Hand(updatedPlayer2Hand);
 
     // Emit socket events if needed
     // Modify according to your Socket.io implementation
