@@ -3,14 +3,27 @@
   flex-wrap: nowrap;
 }
 
-.Card {
-  width: 100px;
-  height: 100px;
-  background-color: red;
-  /* position: absolute; */
-  cursor: grab;
+.PlayerHand {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.PlayerDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+.Player {
+  display: flex;
+  flex-direction: column;
 }
 
+.CenterPiles {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 .Hand {
   width: 500px;
   height: 100px;
