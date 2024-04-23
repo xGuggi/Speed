@@ -235,7 +235,7 @@ export default function App() {
 
   //function press button or when we detect a drop event 
 
-    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile) => {
+    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile, p1DrawPileSize, p2DrawPileSize) => {
       console.log("Inside socket new cards");
       setPlayer1Hand(player1Hand);
       console.log(player1Hand);
@@ -244,6 +244,8 @@ export default function App() {
       setLeftPile(leftPile);
       console.log("rightPile" + rightPile);
       setRightPile(rightPile);
+      setP1DrawPileSize(p1DrawPileSize);
+      setP2DrawPileSize(p2DrawPileSize);
       SetStateCheck(!stateCheck);
     });
 
@@ -274,14 +276,6 @@ export default function App() {
     setRightPile(rightPile);
   });
 
-  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
-    setLeftPile(leftPile);
-    setRightPile(rightPile);
-    setPlayer1Hand(player1Hand);
-    setPlayer2Hand(player2Hand);
-  });
-
-
   function handleDragEnd(event) {
 
     const { active, over } = event;
@@ -293,6 +287,8 @@ export default function App() {
     let updatedPlayer2Hand = [...player2Hand];
     let updatedLeftPile = leftPile;
     let updatedRightPile = rightPile;
+    let updatedP1DrawPileSize = p1Draws;
+    let updatedP2DrawPileSize = p2Draws;
 
     let startP1Handsize = updatedPlayer1Hand.length;
     let startP2Handsize = updatedPlayer2Hand.length;
@@ -304,9 +300,9 @@ export default function App() {
     } 
     
     if (startP1Handsize > updatedPlayer1Hand.length) {
-      setP1DrawPileSize(p1Draws-1);
+      updatedP1DrawPileSize = p1Draws-1;
     } else if (startP2Handsize > updatedPlayer2Hand.length) {
-      setP2DrawPileSize(p2Draws-1);
+      updatedP2DrawPileSize = p2Draws-1;
     }
 
     const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -352,7 +348,7 @@ export default function App() {
     //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
     console.log("player1Hand" + player1Hand);
     console.log("p1Draws" + p1Draws);
-    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand );
+    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand, updatedP1DrawPileSize, updatedP2DrawPileSize );
     }
 
 const handleClose = async () =>
