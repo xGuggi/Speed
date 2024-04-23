@@ -88,7 +88,7 @@ export default function App() {
     { rank: 'A', suit: '♥' },
   ]);
 
-  ///// Function to handle the win /////
+  /////////////// Function to handle the win ///////////////
   const isHandEmpty = () => {
     console.log("at the function");
     console.log(p1Draws);
@@ -96,11 +96,19 @@ export default function App() {
     if (p1Draws === 0){
       setWinner(1);
       setEmpty(true);
+      setTimeout(() => {
+        setOpen(true);
+        console.log(open);
+      }, 5000);
       console.log("at player one");
     } 
     if (p2Draws === 0){
       setWinner(2);
       setEmpty(true);
+      setTimeout(() => {
+        setOpen(true);
+        console.log(open);
+      }, 5000);
       console.log("at player two");
     }
   };
@@ -111,18 +119,18 @@ export default function App() {
     checkForWin();
   });
 
-  useEffect(() => {
-    const endGame = () =>{
-      setTimeout(() => {
-      }, popUpModal, 5000);
-    };
-    endGame();
-  }, [winner]);
+  // useEffect(() => {
+  //   const endGame = () =>{
+    // setTimeout(() => {
+    // }, popUpModal, 5000);
+  //   };
+  //   endGame();
+  // }, [winner]);
 
   const popUpModal = async () =>
   {
     setOpen(true);
-    //needs more work to send to someone
+    //needs more work to send to specific winning player
   }
 /////////////////////////////////////////////////////////
 
@@ -433,7 +441,7 @@ const handleClose = async () =>
       <button onClick={() => setOpen(true)}>History</button>
       <Modal open = {open} onClose={handleClose} />
         <div className="win-message">
-          {empty ? "Player " + winner + "wins!" : ""}
+          {empty ? "Player " + winner + " wins!" : ""}
         </div>
       
     </DndContext>
@@ -441,13 +449,3 @@ const handleClose = async () =>
   
 };
 
-{/* <div className="win-message">
-{isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
-</div> */}
-
-
-// {gameOver && (
-//   <div className="win-message">
-//     {isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
-//   </div>
-//   )}
