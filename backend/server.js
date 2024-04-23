@@ -111,8 +111,14 @@ io.on('connection', (socket) =>{
   io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile);
 });
 
+io.sockets.on('connection', function (socket) {
+  var socketId = socket.id;
+  var clientIp = socket.request.connection.remoteAddress;
+});
+
 socket.on('updateHands', (player1Hand, player2Hand) => {
   console.log("inside updatehands socket" + player1Hand);
+  //console.log(windows.location.host);
   io.emit('newHands', player1Hand, player2Hand);
 })
 });
@@ -153,9 +159,9 @@ io.on('connection', (socket) => {
     io.emit('message', message);
   });
 
-  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
-    socket.emit(leftPile, rightPile, player1Hand, player2Hand);
-  });
+  // socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
+  //   socket.emit(leftPile, rightPile, player1Hand, player2Hand);
+  // });
 
 //   socket.on('differentMessage', (message) => {
 //     io.emit('differentResponse', 'Whats up');
