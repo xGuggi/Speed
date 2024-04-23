@@ -22,6 +22,8 @@ export default function App() {
   const [stateCheck, SetStateCheck] = useState('true');
   const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
+  const [p1Draws, setP1DrawPileSize] = useState(20);
+  const [p2Draws, setP2DrawPileSize] = useState(20);
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
@@ -278,6 +280,7 @@ export default function App() {
 
 
   function handleDragEnd(event) {
+
     const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
@@ -288,14 +291,19 @@ export default function App() {
     let updatedLeftPile = leftPile;
     let updatedRightPile = rightPile;
 
+    let startP1Handsize = updatedPlayer1Hand.length;
+    let startP2Handsize = updatedPlayer2Hand.length;
+
     if (event.over.id.split('-')[0] === "l" || event.over.id.split('-')[0] === "r" ||
       event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
       updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
-    } else if (event.over.id.split('-')[0] === "p1") {
-      updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
-    } else if (event.over.id.split('-')[0] === "p2") {
-      updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
+    } 
+    
+    if (startP1Handsize > updatedPlayer1Hand.length) {
+      setP1DrawPileSize(p1Draws-1);
+    } else if (startP2Handsize > updatedPlayer2Hand.length) {
+      setP2DrawPileSize(p2Draws-1);
     }
 
     const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -340,6 +348,7 @@ export default function App() {
     // Modify according to your Socket.io implementation
     //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
     console.log("player1Hand" + player1Hand);
+    console.log("p1Draws" + p1Draws);
     socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand );
     }
 
@@ -363,6 +372,7 @@ const handleClose = async () =>
       <div>
         <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
         <h2>Player 1 Hand</h2>
+        <p>cards left: {p1Draws}</p>
         {player1Hand.map((cardid, index) => {
           const [_, rank, suit] = cardid.split('-');
           return (
@@ -400,6 +410,7 @@ const handleClose = async () =>
 
       <div>
         <h2>Player 2 Hand</h2>
+        <p>cards left: {p2Draws}</p>
         {player2Hand.map((cardid, index) => {
           const [_, rank, suit] = cardid.split('-');
           return (
