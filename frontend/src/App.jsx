@@ -27,6 +27,7 @@ export default function App() {
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [open, setOpen] = useState(false); //this is used for the modal 
   const [winner, setWinner] = useState(0); //this is used for the winner
+  const [empty, setEmpty] = useState(false); //this is used for the winner
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -87,15 +88,20 @@ export default function App() {
 
   // Function to check if a player's hand is empty
   const isHandEmpty = (player) => {
+    console.log("at the function");
     if (player === 1) {
       if (!player1Hand.length){
         setWinner(1);
-        return true; 
+        setEmpty(true);
+        console.log("at player one");
+        //return true; 
       }
     } else {
         if (!player2Hand.length){
           setWinner(2);
-          return true;
+          setEmpty(true);
+          console.log("at player two");
+          //return true;
         }
     }
   };
@@ -141,7 +147,8 @@ export default function App() {
       setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    checkWinCondition();
+    //isHandEmpty();
+   // checkWinCondition();
     console.log("player1Hand in handle draw" + player1Hand);
     //socket.emit('updateGame', leftPile, rightPile, player1Hand, player2Hand);
   };
@@ -209,7 +216,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    checkWinCondition();
+    //checkWinCondition(); //this is problem from Joel
     socket.on('id', (id) => {
       //setName(id);
       console.log(id);
@@ -411,13 +418,22 @@ const handleClose = async () =>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
       <button onClick={() => setOpen(true)}>History</button>
       <Modal open = {open} onClose={handleClose} />
-
-      {gameOver && (
-      <div className="win-message">
-        {isHandEmpty(1) ? "" : "Player " + winner + "wins!"} 
-      </div>
-      )}
+        <div className="win-message">
+          {empty ? "Player " + winner + "wins!" : ""}
+        </div>
+      
     </DndContext>
   );
   
 };
+
+{/* <div className="win-message">
+{isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
+</div> */}
+
+
+// {gameOver && (
+//   <div className="win-message">
+//     {isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
+//   </div>
+//   )}
