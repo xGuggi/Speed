@@ -368,18 +368,22 @@ const handleClose = async () =>
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div>
-        <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
-        <h2>Player 1 Hand</h2>
-        <p>cards left: {p1Draws}</p>
-        {player1Hand.map((cardid, index) => {
-          const [_, rank, suit] = cardid.split('-');
-          return (
-            <Draggable key={index} id={cardid}>
-              <CardSVG rank={rank} suit={suit} />
-            </Draggable>
-          );
-        })}
+      <div className='Player'>
+        <div className='PlayerDetails'>
+          <h2>Player 1 Hand</h2>
+          <p>cards left: {p1Draws}</p>
+          <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
+        </div>
+        <div className='PlayerHand'>
+          {player1Hand.map((cardid, index) => {
+            const [_, rank, suit] = cardid.split('-');
+            return (
+              <Draggable key={index} id={cardid}>
+                <CardSVG rank={rank} suit={suit} />
+              </Draggable>
+            );
+          })}
+        </div>
       </div>
       <div className='CenterPiles'>
         <button onClick={handleStalemate}>
@@ -407,20 +411,25 @@ const handleClose = async () =>
         </button>
       </div>
 
-      <div>
-        <h2>Player 2 Hand</h2>
-        <p>cards left: {p2Draws}</p>
-        {player2Hand.map((cardid, index) => {
-          const [_, rank, suit] = cardid.split('-');
-          return (
-            <Draggable key={index} id={cardid}>
-              <CardSVG rank={rank} suit={suit} />
-            </Draggable>
-          );
-        })}
-        
+      <div className='Player'>
+        <div className='PlayerHand'>
+          {player2Hand.map((cardid, index) => {
+            const [_, rank, suit] = cardid.split('-');
+            return (
+              <Draggable key={index} id={cardid}>
+                <CardSVG rank={rank} suit={suit} />
+              </Draggable>
+            );
+          })}
+        </div>
+        <div className='PlayerDetails'>
+          <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+          <p>cards left: {p2Draws}</p>
+          <h2>Player 2 Hand</h2>
+        </div>
       </div>
-      <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+
+      <hr/>
       <button onClick={() => setOpen(true)}>History</button>
       <Modal open = {open} onClose={handleClose} />
         <div className="win-message">

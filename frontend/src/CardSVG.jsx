@@ -8,7 +8,7 @@ const CardSVG = ({ rank, suit }) => {
       viewBox= "0 0 100 150"
       width= "60"
       height= "90"
-      className= "card"
+      className= "Card"
     >
       <rect x="0" y="0" width="100" height="150" fill="none" stroke="black" strokeWidth="2" />
       <text x="25" y="25" fontSize="30" fill={suit === '♠' || suit === '♣' ? 'black' : 'red'}>{suit}</text>
