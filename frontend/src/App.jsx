@@ -22,11 +22,14 @@ export default function App() {
   const [stateCheck, SetStateCheck] = useState('true');
   const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
+  const [p1Draws, setP1DrawPileSize] = useState(20);
+  const [p2Draws, setP2DrawPileSize] = useState(20);
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [open, setOpen] = useState(false); //this is used for the modal 
   const [winner, setWinner] = useState(0); //this is used for the winner
+  const [empty, setEmpty] = useState(false); //this is used for the winner
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -85,20 +88,28 @@ export default function App() {
     { rank: 'A', suit: '♥' },
   ]);
 
-  // Function to check if a player's hand is empty
-  const isHandEmpty = (player) => {
-    if (player === 1) {
-      if (!player1Hand.length){
-        setWinner(1);
-        return true; 
-      }
-    } else {
-        if (!player2Hand.length){
-          setWinner(2);
-          return true;
-        }
+  ///// Function to handle the win /////
+  const isHandEmpty = () => {
+    console.log("at the function");
+    console.log(p1Draws);
+    console.log(p2Draws);
+    if (p1Draws === 0){
+      setWinner(1);
+      setEmpty(true);
+      console.log("at player one");
+    } 
+    if (p2Draws === 0){
+      setWinner(2);
+      setEmpty(true);
+      console.log("at player two");
     }
   };
+  useEffect(() => {
+    const checkForWin = () =>{
+      isHandEmpty();
+    };
+    checkForWin();
+  });
 
   useEffect(() => {
     const endGame = () =>{
@@ -111,10 +122,11 @@ export default function App() {
   const popUpModal = async () =>
   {
     setOpen(true);
+    //needs more work to send to someone
   }
+/////////////////////////////////////////////////////////
 
-
-  // Function to handle win condition
+  // Function to handle win condition : don't use this from Joel!!!!
   const checkWinCondition = () => {
     if (isHandEmpty(1)) {
       console.log("Player wins");
@@ -212,7 +224,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    checkWinCondition();
+    checkWinCondition(); //this is problem from Joel
     socket.on('id', (id) => {
       //setName(id);
       console.log(id);
@@ -223,7 +235,7 @@ export default function App() {
 
   //function press button or when we detect a drop event 
 
-    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile) => {
+    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile, p1DrawPileSize, p2DrawPileSize) => {
       console.log("Inside socket new cards");
       setPlayer1Hand(player1Hand);
       console.log(player1Hand);
@@ -232,6 +244,8 @@ export default function App() {
       setLeftPile(leftPile);
       console.log("rightPile" + rightPile);
       setRightPile(rightPile);
+      setP1DrawPileSize(p1DrawPileSize);
+      setP2DrawPileSize(p2DrawPileSize);
       SetStateCheck(!stateCheck);
     });
 
@@ -262,15 +276,8 @@ export default function App() {
     setRightPile(rightPile);
   });
 
-  socket.on('updateGameState', (leftPile, rightPile, player1Hand, player2Hand) => {
-    setLeftPile(leftPile);
-    setRightPile(rightPile);
-    setPlayer1Hand(player1Hand);
-    setPlayer2Hand(player2Hand);
-  });
-
-
   function handleDragEnd(event) {
+
     const { active, over } = event;
     const cardID = active.id;
     const [_, rank, suit] = cardID.split('-');
@@ -280,15 +287,22 @@ export default function App() {
     let updatedPlayer2Hand = [...player2Hand];
     let updatedLeftPile = leftPile;
     let updatedRightPile = rightPile;
+    let updatedP1DrawPileSize = p1Draws;
+    let updatedP2DrawPileSize = p2Draws;
+
+    let startP1Handsize = updatedPlayer1Hand.length;
+    let startP2Handsize = updatedPlayer2Hand.length;
 
     if (event.over.id.split('-')[0] === "l" || event.over.id.split('-')[0] === "r" ||
       event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
       updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
-    } else if (event.over.id.split('-')[0] === "p1") {
-      updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
-    } else if (event.over.id.split('-')[0] === "p2") {
-      updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
+    } 
+    
+    if (startP1Handsize > updatedPlayer1Hand.length) {
+      updatedP1DrawPileSize = p1Draws-1;
+    } else if (startP2Handsize > updatedPlayer2Hand.length) {
+      updatedP2DrawPileSize = p2Draws-1;
     }
 
     const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -333,7 +347,8 @@ export default function App() {
     // Modify according to your Socket.io implementation
     //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
     console.log("player1Hand" + player1Hand);
-    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand );
+    console.log("p1Draws" + p1Draws);
+    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand, updatedP1DrawPileSize, updatedP2DrawPileSize );
     }
 
 const handleClose = async () =>
@@ -356,6 +371,7 @@ const handleClose = async () =>
       <div>
         <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
         <h2>Player 1 Hand</h2>
+        <p>cards left: {p1Draws}</p>
         {player1Hand.map((cardid, index) => {
           const [_, rank, suit] = cardid.split('-');
           return (
@@ -393,6 +409,7 @@ const handleClose = async () =>
 
       <div>
         <h2>Player 2 Hand</h2>
+        <p>cards left: {p2Draws}</p>
         {player2Hand.map((cardid, index) => {
           const [_, rank, suit] = cardid.split('-');
           return (
@@ -406,13 +423,22 @@ const handleClose = async () =>
       <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
       <button onClick={() => setOpen(true)}>History</button>
       <Modal open = {open} onClose={handleClose} />
-
-      {gameOver && (
-      <div className="win-message">
-        {isHandEmpty(1) ? "" : "Player " + winner + "wins!"} 
-      </div>
-      )}
+        <div className="win-message">
+          {empty ? "Player " + winner + "wins!" : ""}
+        </div>
+      
     </DndContext>
   );
   
 };
+
+{/* <div className="win-message">
+{isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
+</div> */}
+
+
+// {gameOver && (
+//   <div className="win-message">
+//     {isHandEmpty(1) ? "Player " + winner + "wins!" : ""} 
+//   </div>
+//   )}

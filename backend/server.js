@@ -104,11 +104,11 @@ io.on('connection', (socket) =>{
 
 
 io.on('connection', (socket) =>{
-  socket.on('updateGame', (leftPile, rightPile, player1Hand, player2Hand) =>{
+  socket.on('updateGame', (leftPile, rightPile, player1Hand, player2Hand, p1DrawPileSize, p2DrawPileSize) =>{
   
     //console.log('inside new cards connection');
     console.log(leftPile + " " + rightPile);
-  io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile);
+  io.emit('newCards', player1Hand, player2Hand, leftPile, rightPile, p1DrawPileSize, p2DrawPileSize);
 });
 
 io.sockets.on('connection', function (socket) {
@@ -142,7 +142,7 @@ io.on('connection', (socket) => {
 // Socket.IO
 io.on('connection', (socket) => {
 
-  //console.log(`Socket ${socket.id} connected`);
+  console.log(`Socket ${socket.id} connected`);
 
   if (playerOne === '')
   {
@@ -168,7 +168,7 @@ io.on('connection', (socket) => {
 //   });
 
   socket.on('disconnect', () => {
-    //console.log(`Socket ${socket.id} disconnected`);
+    console.log(`Socket ${socket.id} disconnected`);
     playerOne = '';
     playerTwo = '';
   });
@@ -181,7 +181,7 @@ app.listen(portTwo, () => {
   dbo.connectToServer(function (err) {
     if (err) console.error(err);
    });
-  //console.log(`Server is running on port: ${portTwo}`);
+  console.log(`Server is running on port: ${portTwo}`);
 });
 
 
