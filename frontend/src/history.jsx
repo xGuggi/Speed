@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-
 const Modal = ({open, onClose}) => {
+    const [userName, setUserName] = useState('');
 
     if (!open) return null; 
 
@@ -54,6 +54,7 @@ const Modal = ({open, onClose}) => {
                     <p onClick={onClose} className="txt">X</p>
                     <br></br>
                     <h1>History</h1>
+                    <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
                 </div>
             </div>
     );
