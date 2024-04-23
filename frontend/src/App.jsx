@@ -87,23 +87,26 @@ export default function App() {
   ]);
 
   // Function to check if a player's hand is empty
-  const isHandEmpty = (player) => {
+  const isHandEmpty = () => {
     console.log("at the function");
-    if (player === 1) {
-      if (!player1Hand.length){
+    console.log(player1Hand.length);
+    console.log(player2Hand.length);
+    //if (player === 1) {
+      if (true){
         setWinner(1);
         setEmpty(true);
         console.log("at player one");
         //return true; 
-      }
-    } else {
+      //}
+    } 
+    //else {
         if (!player2Hand.length){
           setWinner(2);
           setEmpty(true);
           console.log("at player two");
           //return true;
         }
-    }
+    //}
   };
 
   useEffect(() => {
@@ -150,8 +153,7 @@ export default function App() {
       updatedPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
-    //isHandEmpty();
-   // checkWinCondition();
+    checkWinCondition();
     console.log("player1Hand in handle draw" + player1Hand);
     socket.emit('updateHands', updatedPlayer1Hand, updatedPlayer2Hand);
   };
@@ -219,7 +221,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    //checkWinCondition(); //this is problem from Joel
+    checkWinCondition(); //this is problem from Joel
+    isHandEmpty();
     socket.on('id', (id) => {
       //setName(id);
       console.log(id);
