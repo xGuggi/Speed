@@ -88,28 +88,28 @@ export default function App() {
     { rank: 'A', suit: '♥' },
   ]);
 
-  // Function to check if a player's hand is empty
+  ///// Function to handle the win /////
   const isHandEmpty = () => {
     console.log("at the function");
-    console.log(player1Hand.length);
-    console.log(player2Hand.length);
-    //if (player === 1) {
-      if (true){
-        setWinner(1);
-        setEmpty(true);
-        console.log("at player one");
-        //return true; 
-      //}
+    console.log(p1Draws);
+    console.log(p2Draws);
+    if (p1Draws === 0){
+      setWinner(1);
+      setEmpty(true);
+      console.log("at player one");
     } 
-    //else {
-        if (!player2Hand.length){
-          setWinner(2);
-          setEmpty(true);
-          console.log("at player two");
-          //return true;
-        }
-    //}
+    if (p2Draws === 0){
+      setWinner(2);
+      setEmpty(true);
+      console.log("at player two");
+    }
   };
+  useEffect(() => {
+    const checkForWin = () =>{
+      isHandEmpty();
+    };
+    checkForWin();
+  });
 
   useEffect(() => {
     const endGame = () =>{
@@ -122,10 +122,11 @@ export default function App() {
   const popUpModal = async () =>
   {
     setOpen(true);
+    //needs more work to send to someone
   }
+/////////////////////////////////////////////////////////
 
-
-  // Function to handle win condition
+  // Function to handle win condition : don't use this from Joel!!!!
   const checkWinCondition = () => {
     if (isHandEmpty(1)) {
       console.log("Player wins");
@@ -224,7 +225,6 @@ export default function App() {
 
   useEffect(() => {
     checkWinCondition(); //this is problem from Joel
-    isHandEmpty();
     socket.on('id', (id) => {
       //setName(id);
       console.log(id);
