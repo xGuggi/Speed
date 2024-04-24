@@ -3,7 +3,7 @@ const speedRoutes = express.Router();
 const dbo = require("../db/conn");
 let playerName;
 let cards;
-let win;
+let loser;
 
 speedRoutes.post("/setScore", async(req, res) => {
     const db_connect = await dbo.getDb();
@@ -12,7 +12,7 @@ speedRoutes.post("/setScore", async(req, res) => {
     {
         Name: playerName,
         Cards: cards,
-        Win: win
+        Win: loser
     };
     const result = await db_connect.collection("SpeedHighScores").insertOne(myobj);
     res.json(result);
@@ -24,7 +24,7 @@ speedRoutes.post("/setScore", async(req, res) => {
 
 speedRoutes.post("/gather", async(req, res) => {
     const cards = req.body.cards; 
-    const win = req.body.win;   
+    const loser = req.body.loser;   
 });
 
 
