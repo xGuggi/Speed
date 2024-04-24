@@ -251,6 +251,10 @@ export default function App() {
     setRightPile(`r-${drawnCard2.rank}-${drawnCard2.suit}`);
   }
 
+  const handleFinalStalemate = () => {
+    
+  }
+
   useEffect(() => {
     checkWinCondition(); //this is problem from Joel
     socket.on('id', (id) => {
