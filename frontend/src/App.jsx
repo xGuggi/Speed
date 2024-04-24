@@ -217,8 +217,14 @@ export default function App() {
     }
   
     // Central piles
-    const centerL = localFullDeck.shift();  
-    const centerR = localFullDeck.shift();  
+    let centerL, centerR;
+    do {
+      centerL = localFullDeck.shift();
+    } while (localPlayer1Hand.includes(`h-${centerL.rank}-${centerL.suit}`) || localPlayer2Hand.includes(`h-${centerL.rank}-${centerL.suit}`));
+  
+    do {
+      centerR = localFullDeck.shift();
+    } while (localPlayer1Hand.includes(`h-${centerR.rank}-${centerR.suit}`) || localPlayer2Hand.includes(`h-${centerR.rank}-${centerR.suit}`));
   
     // Set the state at the end of all operations
     setFullDeck(localFullDeck);
@@ -228,7 +234,6 @@ export default function App() {
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
     socket.emit('initialState', localFullDeck, localPlayer1Hand, localPlayer2Hand, `l-${centerL.rank}-${centerL.suit}`, `r-${centerR.rank}-${centerR.suit}`);
   }, []);
-  
   
   const handleStalemate = ()=> {
     const drawnCard = fullDeck[0];
