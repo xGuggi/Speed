@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import Modal from './history';
 
 
-const socket = io('http://localhost:5001', {
+const socket = io(`http://${window.location.hostname}:5001`, {
   withCredentials: true,
   extraHeaders: {
     "my-custom-header": "abcd"
@@ -173,9 +173,6 @@ export default function App() {
     socket.emit('updateHands', updatedPlayer1Hand, updatedPlayer2Hand);
   };
 
-
-
-  
   useEffect(() => {
     const shuffleDeck = (deck) => {
       for (let i = deck.length - 1; i > 0; i--) {
@@ -184,38 +181,35 @@ export default function App() {
       }
       return deck;
     };
-
-    
-
-
-
+  
     // Shuffle the full deck
     let localFullDeck = shuffleDeck([...fullDeck]);
-
-    // Draw initial hands for both players
-    let localPlayer1Hand = [...player1Hand];
-    let localPlayer2Hand = [...player2Hand];
-
-    const handleDraw = (player) => {
-      const drawnCard = localFullDeck.shift();  // This mutates localFullDeck by removing the first element
-
-      if (player === 1) {
-        localPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
-      } else {
-        localPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
-      }
-    };
-
+  
+    // Divide the deck into two equal halves
+    const halfDeckSize = Math.ceil(localFullDeck.length / 2);
+    const deck1 = localFullDeck.slice(0, halfDeckSize);
+    const deck2 = localFullDeck.slice(halfDeckSize);
+  
+    // Draw initial hands for both players alternately, limiting each player to 5 cards
+    let localPlayer1Hand = [];
+    let localPlayer2Hand = [];
     for (let i = 0; i < 5; i++) {
-      handleDraw(1);
-      handleDraw(2);
+      const drawnCard1 = deck1.shift();
+      const drawnCard2 = deck2.shift();
+      localPlayer1Hand.push(`h-${drawnCard1.rank}-${drawnCard1.suit}`);
+      localPlayer2Hand.push(`h-${drawnCard2.rank}-${drawnCard2.suit}`);
     }
-
-
+  
     // Central piles
-    const centerL = localFullDeck.shift();  
-    const centerR = localFullDeck.shift();  
-
+    let centerL, centerR;
+    do {
+      centerL = localFullDeck.shift();
+    } while (localPlayer1Hand.includes(`h-${centerL.rank}-${centerL.suit}`) || localPlayer2Hand.includes(`h-${centerL.rank}-${centerL.suit}`));
+  
+    do {
+      centerR = localFullDeck.shift();
+    } while (localPlayer1Hand.includes(`h-${centerR.rank}-${centerR.suit}`) || localPlayer2Hand.includes(`h-${centerR.rank}-${centerR.suit}`));
+  
     // Set the state at the end of all operations
     setFullDeck(localFullDeck);
     setPlayer1Hand(localPlayer1Hand);
@@ -223,7 +217,7 @@ export default function App() {
     setLeftPile(`l-${centerL.rank}-${centerL.suit}`);
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
     socket.emit('initialState', localFullDeck, localPlayer1Hand, localPlayer2Hand, `l-${centerL.rank}-${centerL.suit}`, `r-${centerR.rank}-${centerR.suit}`);
-  }, []);  // Dependencies array is empty, so this runs only once
+  }, []);
   
   const handleStalemate = ()=> {
     const drawnCard = fullDeck[0];
@@ -233,6 +227,10 @@ export default function App() {
     //[...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]
     setLeftPile(`l-${drawnCard.rank}-${drawnCard.suit}`);
     setRightPile(`r-${drawnCard2.rank}-${drawnCard2.suit}`);
+  }
+
+  const handleFinalStalemate = () => {
+    
   }
 
   useEffect(() => {
