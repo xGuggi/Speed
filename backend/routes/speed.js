@@ -8,6 +8,8 @@ let loser;
 speedRoutes.post("/setScore", async(req, res) => {
     const db_connect = await dbo.getDb();
     playerName = req.body.userName; 
+    cards = cards.ToString();
+    console.log(cards);
     const myobj = 
     {
         Name: playerName,
@@ -17,14 +19,14 @@ speedRoutes.post("/setScore", async(req, res) => {
     const result = await db_connect.collection("SpeedHighScores").insertOne(myobj);
     res.json(result);
     console.log(playerName);
-    console.log(playerPass);
 });
 
 
 
 speedRoutes.post("/gather", async(req, res) => {
     cards = req.body.cards; 
-    loser = req.body.loser;   
+    loser = req.body.loser;
+    console.log(cards + " " + loser);   
 });
 
 
