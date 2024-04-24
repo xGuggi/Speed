@@ -129,6 +129,10 @@ export default function App() {
 
   const popUpModal = async () =>
   {
+
+
+
+    
     setOpen(true);
     //needs more work to send to specific winning player
   }

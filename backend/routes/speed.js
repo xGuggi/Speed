@@ -23,9 +23,16 @@ speedRoutes.post("/setScore", async(req, res) => {
 });
 
 
+
+
+
+
+
+
+
 speedRoutes.get("/getScores", async(req, res) => {
     const db_connect = await dbo.getDb();
-    let scores = await db_connect.collection("SpeedHighScores").find({Name: playerName}).toArray();
+    let scores = await db_connect.collection("SpeedHighScores").find({Name: "Hannah"}).toArray();
     console.log("HighScores " + scores.Name);
     res.json(scores);
 });

@@ -46,6 +46,20 @@ const Modal = ({open, onClose}) => {
     //         </div>`
     //     ).join('');
     //     };
+    const addUser = async () => {
+       const newUser = await fetch("http://localhost:5001/setScore", {
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({userName: userName}),
+        });
+        const historyResponse = await fetch("http://localhost:5001/prev", { method: 'GET', credentials: 'include'});
+
+
+
+    };
 
 
     return(
@@ -55,6 +69,7 @@ const Modal = ({open, onClose}) => {
                     <br></br>
                     <h1>History</h1>
                     <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
+                    <button onClick={addUser}>Submit</button>
                 </div>
             </div>
     );
