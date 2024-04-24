@@ -8,7 +8,6 @@ let loser;
 speedRoutes.post("/setScore", async(req, res) => {
     const db_connect = await dbo.getDb();
     playerName = req.body.userName; 
-    cards = cards.ToString();
     console.log(cards);
     const myobj = 
     {
@@ -35,7 +34,7 @@ speedRoutes.post("/gather", async(req, res) => {
 
 speedRoutes.get("/getScores", async(req, res) => {
     const db_connect = await dbo.getDb();
-    let scores = await db_connect.collection("SpeedHighScores").find({Name: "Hannah"}).toArray();
+    let scores = await db_connect.collection("SpeedHighScores").find({Name: userName}).toArray();
     console.log("HighScores " + scores.Name);
     res.json(scores);
 });

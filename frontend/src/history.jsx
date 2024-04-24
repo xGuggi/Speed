@@ -20,6 +20,7 @@ const Modal = ({open, onClose}) => {
     const addUser = async () => {
         socket.emit('gameWin', userName);
         socket.on('hisRes', (data) => {
+            console.log(data);
 
         document.getElementById('history').innerHTML = data.map(data => 
             `<div>
