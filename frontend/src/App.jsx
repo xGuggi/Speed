@@ -97,17 +97,16 @@ export default function App() {
       setWinner(1);
       setEmpty(true);
       setTimeout(() => {
-        setOpen(true);
-        console.log(open);
+        popUpModal();
       }, 5000);
+   
       console.log("at player one");
     } 
     if (p2Draws === 0){
       setWinner(2);
       setEmpty(true);
       setTimeout(() => {
-        setOpen(true);
-        console.log(open);
+        popUpModal();
       }, 5000);
       console.log("at player two");
     }
@@ -118,14 +117,6 @@ export default function App() {
     };
     checkForWin();
   });
-
-  // useEffect(() => {
-  //   const endGame = () =>{
-    // setTimeout(() => {
-    // }, popUpModal, 5000);
-  //   };
-  //   endGame();
-  // }, [winner]);
 
   const popUpModal = async () =>
   {
@@ -141,16 +132,9 @@ export default function App() {
       let cardSend = p2Draws; 
       loser = 2; 
     }
-      const newUser = await fetch("http://localhost:5001/gather", {
-           credentials: "include",
-           method: "POST",
-           headers: {
-               "Content-Type": "application/json",
-           },
-           body: JSON.stringify({cards: cardSend, loser: loser}),
-       });    
+    socket.emit('gameWinCollect', cardSend, loser);
+
     setOpen(true);
-    //needs more work to send to specific winning player
   }
 /////////////////////////////////////////////////////////
 

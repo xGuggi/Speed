@@ -1,63 +1,45 @@
 import React, { useState } from "react";
+import io from 'socket.io-client';
+
+
+const socket = io('http://localhost:5001', {
+  withCredentials: true,
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  },
+  transports: ["websocket"]
+});
+
 
 const Modal = ({open, onClose}) => {
     const [userName, setUserName] = useState('');
 
     if (!open) return null; 
 
-    // const handleShowHistory = async () => {
-    //     const response = await fetch(`http://localhost:5001/history/${selectedAccount}`, {
-    //     credentials: "include",
-    //     method: "GET",
-    //     });
-    //     let data = await response.json();
-    //     let history = data.history;
-    //     setSelectedAccount(history);
-    //     document.getElementById('history').innerHTML = history.map(record => 
-    //         `<div>
-    //           <div>Account Name: ${record.account}</div>
-    //           <div>Transaction Date: ${record.date}</div>
-    //           <div>Transaction Type: ${record.type}</div>
-    //           <div>Transaction Amount: ${record.amount}</div> 
-    //           <div>Transaction Description: ${record.description}</div>
-    //           <br><br>
-    //         </div>`
-    //     ).join('');
-    // };
 
 
-    // const handleShowEntireHistory = async () => {
-    //     const response = await fetch("http://localhost:5001/history", {
-    //     credentials: "include",
-    //     method: "GET",
-    //     });
-    //     let data = await response.json();
-    //     console.log(data);
-    //     let history = data.history;
-    //     setSelectedAccount(history);
-    //     document.getElementById('history').innerHTML = history.map(record => 
-    //         `<div>
-    //           <div>Account Name: ${record.account}</div>
-    //           <div>Transaction Date: ${record.date}</div>
-    //           <div>Transaction Type: ${record.type}</div>
-    //           <div>Transaction Amount: ${record.amount}</div> 
-    //           <div>Transaction Description: ${record.description}</div>
-    //           <br><br>
-    //         </div>`
-    //     ).join('');
-    //     };
+
+
+
+
     const addUser = async () => {
-       const newUser = await fetch("http://localhost:5001/setScore", {
-            credentials: "include",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({userName: userName}),
+        socket.emit('gameWin', userName);
+        socket.on('hisRes', (data) => {
+
+        document.getElementById('history').innerHTML = data.map(data => 
+            `<div>
+                <div>Name: ${data.Name}</div>
+                <div>Win: ${data.Win}</div>
+                <div>Cards: ${data.Cards}</div>
+                <br><br>
+            </div>`
+        ).join('');
         });
-        const historyResponse = await fetch("http://localhost:5001/prev", { method: 'GET', credentials: 'include'});
-        const data = await response.json();
+
+
     };
+
+    
 
 
     return(
@@ -68,6 +50,7 @@ const Modal = ({open, onClose}) => {
                     <h1>History</h1>
                     <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
                     <button onClick={addUser}>Submit</button>
+                    <h3 id="history"></h3>
                 </div>
             </div>
     );

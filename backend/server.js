@@ -139,6 +139,56 @@ io.on('connection', (socket) => {
 
 
 
+
+io.on('connection', (socket) => {
+  socket.on('gameWinCollect', async (cardSend, loser) => {
+
+    const newUser = await fetch("http://localhost:5001/gather", {
+           credentials: "include",
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json",
+           },
+           body: JSON.stringify({cards: cardSend, loser: loser}),
+       });   
+  const data = await response.json();
+
+    //io.emit('resData', data);
+  })
+});
+
+
+
+
+io.on('connection', (socket) => {
+  socket.on('gameWin', async (userName) => {
+
+    const newUser = await fetch("http://localhost:5001/setScore", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({userName: userName}),
+  });
+  const data = await response.json();
+
+    io.emit('dataRes', data);
+  })
+});
+
+io.on('connection', (socket) => {
+  socket.on('historyRes', async () => {
+
+    const historyResponse = await fetch("http://localhost:5001/prev", { method: 'GET', credentials: 'include'});
+    const data = await historyResponse.json();
+
+    io.emit('hisRes', data);
+  })
+});
+
+
+
 // Socket.IO
 io.on('connection', (socket) => {
 
