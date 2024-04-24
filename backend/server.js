@@ -171,7 +171,7 @@ io.on('connection', (socket) => {
       },
       body: JSON.stringify({userName: userName}),
   });
-  const data = await response.json();
+  const data = await newUser.json();
 
     io.emit('dataRes', data);
   })
