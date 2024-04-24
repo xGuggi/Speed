@@ -17,7 +17,6 @@ speedRoutes.post("/setScore", async(req, res) => {
     const result = await db_connect.collection("SpeedHighScores").insertOne(myobj);
     res.json(result);
     console.log(playerName);
-    console.log(playerPass);
 });
 
 

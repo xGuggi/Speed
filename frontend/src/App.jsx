@@ -124,12 +124,12 @@ export default function App() {
     let loser; 
     if (p1Draws > p2Draws)
     {
-      let cardSend = p1Draws;
+      cardSend = p1Draws;
       loser = 1;
     }
     else 
     {
-      let cardSend = p2Draws; 
+      cardSend = p2Draws; 
       loser = 2; 
     }
     socket.emit('gameWinCollect', cardSend, loser);
