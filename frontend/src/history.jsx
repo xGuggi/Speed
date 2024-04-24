@@ -17,14 +17,10 @@ const Modal = ({open, onClose}) => {
     if (!open) return null; 
 
 
-
-
-
-
-
     const addUser = async () => {
         socket.emit('gameWin', userName);
         socket.on('hisRes', (data) => {
+            console.log(data);
 
         document.getElementById('history').innerHTML = data.map(data => 
             `<div>
@@ -35,13 +31,9 @@ const Modal = ({open, onClose}) => {
             </div>`
         ).join('');
         });
-
-
     };
 
     
-
-
     return(
             <div className="popUp">
                 <div className="modalContainer">

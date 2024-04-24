@@ -22,8 +22,8 @@ export default function App() {
   const [stateCheck, SetStateCheck] = useState('true');
   const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
-  const [p1Draws, setP1DrawPileSize] = useState(20);
-  const [p2Draws, setP2DrawPileSize] = useState(20);
+  const [p1Draws, setP1DrawPileSize] = useState(1);
+  const [p2Draws, setP2DrawPileSize] = useState(1);
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
@@ -123,11 +123,16 @@ export default function App() {
     let loser;
     if (p1Draws > p2Draws) {
       let cardSend = p1Draws;
+    let loser; 
+    if (p1Draws > p2Draws)
+    {
+      cardSend = p1Draws;
       loser = 1;
     }
-    else {
-      let cardSend = p2Draws;
-      loser = 2;
+    else 
+    {
+      let cardSend = p2Draws; 
+      loser = 2; 
     }
     socket.emit('gameWinCollect', cardSend, loser);
 
