@@ -56,9 +56,7 @@ const Modal = ({open, onClose}) => {
             body: JSON.stringify({userName: userName}),
         });
         const historyResponse = await fetch("http://localhost:5001/prev", { method: 'GET', credentials: 'include'});
-
-
-
+        const data = await response.json();
     };
 
 

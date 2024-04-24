@@ -129,10 +129,26 @@ export default function App() {
 
   const popUpModal = async () =>
   {
-
-
-
-    
+    let cardSend;
+    let loser; 
+    if (p1Draws > p2Draws)
+    {
+      let cardSend = p1Draws;
+      loser = 1;
+    }
+    else 
+    {
+      let cardSend = p2Draws; 
+      loser = 2; 
+    }
+      const newUser = await fetch("http://localhost:5001/gather", {
+           credentials: "include",
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json",
+           },
+           body: JSON.stringify({cards: cardSend, loser: loser}),
+       });    
     setOpen(true);
     //needs more work to send to specific winning player
   }
