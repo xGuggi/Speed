@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import Modal from './history';
 
 
-const socket = io('http://localhost:5001', {
+const socket = io('http://2001:1948:212:11d0:4db3:4f38:8ce2:db97:5001', {
   withCredentials: true,
   extraHeaders: {
     "my-custom-header": "abcd"
