@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
   })
 })
 
-
+/////////////////////////////////////////////////////////////
 
 
 io.on('connection', (socket) => {
@@ -177,16 +177,18 @@ io.on('connection', (socket) => {
   })
 });
 
+
+
 io.on('connection', (socket) => {
   socket.on('historyRes', async () => {
 
-    const historyResponse = await fetch("http://localhost:5001/prev", { method: 'GET', credentials: 'include'});
-    const data = await historyResponse.json();
-
+    const historyResponse = await fetch("http://localhost:5001/getScores", { method: 'GET', credentials: 'include'});
+    let data = await historyResponse.json(); 
+    console.log(data);
     io.emit('hisRes', data);
   })
 });
-
+/////////////////////////////////////////////////////////////////
 
 
 // Socket.IO

@@ -13,24 +13,25 @@ const socket = io('http://localhost:5001', {
 
 const Modal = ({open, onClose}) => {
     const [userName, setUserName] = useState('');
-
+    let test; 
     if (!open) return null; 
 
 
     const addUser = async () => {
         socket.emit('gameWin', userName);
+        socket.emit('historyRes');
         socket.on('hisRes', (data) => {
-            console.log(data);
-
-        document.getElementById('history').innerHTML = data.map(data => 
-            `<div>
-                <div>Name: ${data.Name}</div>
-                <div>Win: ${data.Win}</div>
-                <div>Cards: ${data.Cards}</div>
-                <br><br>
-            </div>`
-        ).join('');
+        test = data;
         });
+        // document.getElementById('history').innerHTML = test.map(record => 
+        //     `<tr>
+        //         <td>Name${record.Name}</td>
+        //         <td>Win: ${record.Loser}</td>
+        //         <td>Cards: ${record.Cards}</td>
+        //         <br><br>
+        //     </tr>`
+        // ).join('');
+        console.log(test);
     };
 
     
@@ -42,7 +43,11 @@ const Modal = ({open, onClose}) => {
                     <h1>History</h1>
                     <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
                     <button onClick={addUser}>Submit</button>
-                    <h3 id="history"></h3>
+                    <table>
+                        <tbody id="history">
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
     );

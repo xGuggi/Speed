@@ -13,11 +13,13 @@ speedRoutes.post("/setScore", async(req, res) => {
     {
         Name: playerName,
         Cards: cards,
-        Win: loser
+        Loser: loser
     };
     const result = await db_connect.collection("SpeedHighScores").insertOne(myobj);
-    res.json(result);
     console.log(playerName);
+    
+    res.json(result);
+    
 });
 
 
@@ -34,8 +36,9 @@ speedRoutes.post("/gather", async(req, res) => {
 
 speedRoutes.get("/getScores", async(req, res) => {
     const db_connect = await dbo.getDb();
-    let scores = await db_connect.collection("SpeedHighScores").find({Name: userName}).toArray();
-    console.log("HighScores " + scores.Name);
+    const scores = await db_connect.collection("SpeedHighScores").find({Name: playerName}).toArray();
+    //console.log("HighScores " + scores.Name);
+    console.log("player name " + scores);
     res.json(scores);
 });
 
