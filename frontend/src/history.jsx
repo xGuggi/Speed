@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 
 
 
+
 const socket = io('http://localhost:5001', {
   withCredentials: true,
   extraHeaders: {
@@ -40,17 +41,21 @@ const Modal = ({open, onClose}) => {
     return(
             <div className="popUp">
                 <div className="modalContainer">
+
                     <p onClick={onClose} className="txt">X</p>
+                    <h2>Enter Name</h2>
                     <br></br>
-                    <h1>History</h1>
                     <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
                     <button onClick={addUser}>Submit</button>
+
                     <table>
                         <tbody id="history">
 
                         </tbody>
                     </table>
+
                 </div>
+
             </div>
     );
     
