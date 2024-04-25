@@ -21,17 +21,17 @@ const Modal = ({open, onClose}) => {
         socket.emit('gameWin', userName);
         socket.emit('historyRes');
         socket.on('hisRes', (data) => {
-        test = data;
+            test = data;
+            document.getElementById('history').innerHTML = test.map(record => 
+                `<tr>
+                    <td>Name: ${record.Name}</td>
+                    <td>Win: ${record.Loser}</td>
+                    <td>Cards: ${record.Cards}</td>
+                    <br><br>
+                </tr>`
+            ).join('');
         });
-        // document.getElementById('history').innerHTML = test.map(record => 
-        //     `<tr>
-        //         <td>Name${record.Name}</td>
-        //         <td>Win: ${record.Loser}</td>
-        //         <td>Cards: ${record.Cards}</td>
-        //         <br><br>
-        //     </tr>`
-        // ).join('');
-        console.log(test);
+
     };
 
     
