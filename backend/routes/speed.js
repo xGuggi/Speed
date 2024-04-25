@@ -8,7 +8,6 @@ let loser;
 speedRoutes.post("/setScore", async(req, res) => {
     const db_connect = await dbo.getDb();
     playerName = req.body.userName; 
-    cards = cards.ToString();
     console.log(cards);
     const myobj = 
     {

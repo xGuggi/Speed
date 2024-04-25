@@ -88,7 +88,8 @@ io.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
   socket.on('initialState', (fullDeck, player1Hand, player2Hand, leftPile, rightPile) => {
-    io.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile);
+    console.log("initial state" + socket.id);
+    io.emit('initialState', fullDeck, player1Hand, player2Hand, leftPile, rightPile, socket.id);
   });
 });
 
@@ -193,17 +194,15 @@ io.on('connection', (socket) => {
 io.on('connection', (socket) => {
 
   console.log(`Socket ${socket.id} connected`);
-
-  if (playerOne === '')
-  {
-    playerOne = 'playerOne'; //setting player one
-    io.to(socket.id).emit('id', playerOne); 
+  if (playerOne === '') {
+    playerOne = socket.id;
   }
-  else 
-  {
-    playerTwo = 'playerTwo'; //setting player two
-    io.to(socket.id).emit('id', playerTwo); 
+  else if (playerTwo === '') {
+    playerTwo = socket.id;
   }
+  console.log("Player one" + playerOne);
+  console.log("Player two" + playerTwo);
+  io.to(socket.id).emit('id', socket.id); 
   socket.on('sendMessage', (message) => {
     //console.log(message);
     io.emit('message', message);

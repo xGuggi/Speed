@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import Modal from './history';
 
 
-const socket = io(`http://${window.location.hostname}:5001`, {
+const socket = io(`http://localhost:5001`, {
   withCredentials: true,
   extraHeaders: {
     "my-custom-header": "abcd"
@@ -22,14 +22,16 @@ export default function App() {
   const [stateCheck, SetStateCheck] = useState('true');
   const [gameOver, setGameOver] = useState(false);
   const [player1Hand, setPlayer1Hand] = useState([]);
-  const [p1Draws, setP1DrawPileSize] = useState(1);
-  const [p2Draws, setP2DrawPileSize] = useState(1);
+  const [p1Draws, setP1DrawPileSize] = useState(20);
+  const [p2Draws, setP2DrawPileSize] = useState(20);
   const [player2Hand, setPlayer2Hand] = useState([]);
   const [leftPile, setLeftPile] = useState("l-1-♠");
   const [rightPile, setRightPile] = useState("r-1-♥");
   const [open, setOpen] = useState(false); //this is used for the modal 
   const [winner, setWinner] = useState(0); //this is used for the winner
   const [empty, setEmpty] = useState(false); //this is used for the winner
+  const [player1Id, setPlayer1Id] = useState('');
+  const [player2Id, setPlayer2Id] = useState('');
   const [fullDeck, setFullDeck] = useState([
     { rank: '2', suit: '♠' },
     { rank: '3', suit: '♠' },
@@ -235,13 +237,15 @@ export default function App() {
 
   useEffect(() => {
     checkWinCondition(); //this is problem from Joel
-    socket.on('id', (id) => {
-      //setName(id);
-      console.log(id);
-    });
+
     socket.emit('gameState', fullDeck);
     console.log("insideUseEffect");
   }, []);
+
+  socket.on('id', (id) => {
+    localStorage.setItem('Id', id);
+    console.log(localStorage.getItem('Id'));
+  })
 
   //function press button or when we detect a drop event 
 
@@ -278,7 +282,7 @@ export default function App() {
     console.log(deck);
   })
 
-  socket.on('initialState', (fullDeck, player1Hand, player2Hand, leftPile, rightPile) => {
+  socket.on('initialState', (fullDeck, player1Hand, player2Hand, leftPile, rightPile, id) => {
     setFullDeck(fullDeck);
     setPlayer1Hand(player1Hand);
     setPlayer2Hand(player2Hand);
