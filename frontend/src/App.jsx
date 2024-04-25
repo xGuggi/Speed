@@ -151,21 +151,21 @@ export default function App() {
     }
   };
 
-  const handleDraw = () => {
+  const handleDraw = (playerButton) => {
     const drawnCard = fullDeck[0];
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
     socket.emit('playerOneCheck', localStorage.getItem('Id'));
     socket.on('playerOneReturn', (playerNum) => {
-    if (playerNum === 1) {
+    Nested_if: if (playerNum === 1 && playerButton === 1) {
       if (player1Hand.length >= 5 || p1Draws == 0) {
-        return;
+        break Nested_if;
       }
       updatedPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       console.log(player1Hand);
-    } else {
+    } else if (playerNum === 2 && playerButton === 2) {
       if (player2Hand.length >= 5 || p2Draws < 5) {
-        return;
+        break Nested_if;
       }
       updatedPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
     }
@@ -173,7 +173,7 @@ export default function App() {
     checkWinCondition();
     console.log("player1Hand in handle draw" + player1Hand);
     socket.emit('updateHands', updatedPlayer1Hand, updatedPlayer2Hand);
-    })
+    });
 
   };
 
@@ -389,7 +389,7 @@ const handleClose = async () =>
         <div className='PlayerDetails'>
           <h2>Player 1 Hand</h2>
           <p>cards left: {p1Draws}</p>
-          <button onClick={() => handleDraw()}>Player 1 DRAW</button>
+          <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
         </div>
         <div className='PlayerHand'>
           {player1Hand.map((cardid, index) => {
@@ -440,7 +440,7 @@ const handleClose = async () =>
           })}
         </div>
         <div className='PlayerDetails'>
-          <button onClick={() => handleDraw()}>Player 2 DRAW</button>
+          <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
           <p>cards left: {p2Draws}</p>
           <h2>Player 2 Hand</h2>
         </div>
