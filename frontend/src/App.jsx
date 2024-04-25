@@ -151,11 +151,13 @@ export default function App() {
     }
   };
 
-  const handleDraw = (player) => {
+  const handleDraw = () => {
     const drawnCard = fullDeck[0];
     let updatedPlayer1Hand = [...player1Hand];
     let updatedPlayer2Hand = [...player2Hand];
-    if (player === 1) {
+    socket.emit('playerOneCheck', localStorage.getItem('Id'));
+    socket.on('playerOneReturn', (playerNum) => {
+    if (playerNum === 1) {
       if (player1Hand.length >= 5 || p1Draws == 0) {
         return;
       }
@@ -173,6 +175,8 @@ export default function App() {
     checkWinCondition();
     console.log("player1Hand in handle draw" + player1Hand);
     socket.emit('updateHands', updatedPlayer1Hand, updatedPlayer2Hand);
+    })
+
   };
 
   useEffect(() => {
@@ -386,7 +390,7 @@ const handleClose = async () =>
         <div className='PlayerDetails'>
           <h2>Player 1 Hand</h2>
           <p>cards left: {p1Draws}</p>
-          <button onClick={() => handleDraw(1)}>Player 1 DRAW</button>
+          <button onClick={() => handleDraw()}>Player 1 DRAW</button>
         </div>
         <div className='PlayerHand'>
           {player1Hand.map((cardid, index) => {
@@ -437,7 +441,7 @@ const handleClose = async () =>
           })}
         </div>
         <div className='PlayerDetails'>
-          <button onClick={() => handleDraw(2)}>Player 2 DRAW</button>
+          <button onClick={() => handleDraw()}>Player 2 DRAW</button>
           <p>cards left: {p2Draws}</p>
           <h2>Player 2 Hand</h2>
         </div>
