@@ -34,7 +34,6 @@ const Modal = ({open, onClose}) => {
                 </tr>`
             ).join('');
         });
-
     };
 
     
@@ -47,7 +46,6 @@ const Modal = ({open, onClose}) => {
                     <br></br>
                     <input type = "text" value={userName} onChange={(event) => setUserName(event.target.value)}/>
                     <button onClick={addUser}>Submit</button>
-
                     <table>
                         <tbody id="history">
 
