@@ -185,7 +185,7 @@ io.on('connection', (socket) => {
     const historyResponse = await fetch("http://localhost:5001/getScores", { method: 'GET', credentials: 'include'});
     let data = await historyResponse.json(); 
     console.log(data);
-    io.emit('hisRes', data);
+    socket.emit('hisRes', data);
   })
 });
 /////////////////////////////////////////////////////////////////

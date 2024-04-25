@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import io from 'socket.io-client';
 
 
+
 const socket = io('http://localhost:5001', {
   withCredentials: true,
   extraHeaders: {
@@ -9,6 +10,7 @@ const socket = io('http://localhost:5001', {
   },
   transports: ["websocket"]
 });
+
 
 
 const Modal = ({open, onClose}) => {
@@ -22,7 +24,8 @@ const Modal = ({open, onClose}) => {
         socket.emit('historyRes');
         socket.on('hisRes', (data) => {
         test = data;
-        });
+        })
+    
         // document.getElementById('history').innerHTML = test.map(record => 
         //     `<tr>
         //         <td>Name${record.Name}</td>
