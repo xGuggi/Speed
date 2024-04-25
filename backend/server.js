@@ -33,6 +33,8 @@ let leftDisregard = [];
 let rightDisregard = [];
 let playerOne = '';
 let playerTwo = '';
+let historyOne = '';
+let historyTwo = '';
 let shuffledArray = [];
 let staleMateShuffled = [];
 let usedIndexes = [];
@@ -336,6 +338,27 @@ io.on('connection', (socket) => {
   });
 });
 
+io.on('connection', (socket) => {
+
+  socket.on('playerOneCheck', (id) => {
+    console.log('Player one' + playerOne + 'Id' + id);
+    if (id === playerOne) {
+      io.emit('playerOneReturn', 1);
+    }
+    else {
+      io.emit('playerOneReturn', 2);
+    }
+  })
+  socket.on('playerTwoCheck', (id) => {
+    if (id === playerTwo) {
+      io.emit('playerTwoReturn', true);
+    }
+    else {
+      io.emit('playerTwoReturn', false);
+    }
+  })
+})
+
 
 io.on('connection', (socket) =>{
   socket.on('gameState', (fullDeck) =>{
@@ -365,7 +388,17 @@ socket.on('updateHands', (player1Hand, player2Hand) => {
   //console.log(windows.location.host);
   io.emit('newHands', player1Hand, player2Hand);
 })
+
+socket.on('updatePlayer1Hand', (player1Hand) => {
+  console.log("CHECK INSIDE UPDATE PLAYER 1 HAND" + player1Hand);
+  io.emit('newPlayer1Hand', player1Hand);
+})
+
+socket.on('updatePlayer2Hand', (player2Hand) => {
+  io.emit('newPlayer2Hand', player2Hand);
+})
 });
+
 
 io.on('connection', (socket) => {
   socket.on('staleMate', (staleMateCards) => {
@@ -437,12 +470,19 @@ io.on('connection', (socket) => {
 io.on('connection', (socket) => {
 
   console.log(`Socket ${socket.id} connected`);
-  if (playerOne === '') {
+  if (historyOne === '') {
+    historyOne = socket.id;
+  }
+  else if (playerOne === '') {
     playerOne = socket.id;
+  }
+  else if (historyTwo === '') {
+    historyTwo = socket.id;
   }
   else if (playerTwo === '') {
     playerTwo = socket.id;
   }
+
   console.log("Player one" + playerOne);
   console.log("Player two" + playerTwo);
   io.to(socket.id).emit('id', socket.id); 
