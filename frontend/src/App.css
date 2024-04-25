@@ -24,6 +24,11 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.board {
+  width: 500px;
+}
+
 .Hand {
   width: 500px;
   height: 100px;

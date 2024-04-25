@@ -161,14 +161,12 @@ export default function App() {
       if (player1Hand.length >= 5 || p1Draws == 0) {
         return;
       }
-      //setPlayer1Hand([...player1Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
       updatedPlayer1Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
       console.log(player1Hand);
     } else {
-      if (player2Hand.length >= 5 || p2Draws == 0) {
+      if (player2Hand.length >= 5 || p2Draws < 5) {
         return;
       }
-      //setPlayer2Hand([...player2Hand, `h-${drawnCard.rank}-${drawnCard.suit}`]);
       updatedPlayer2Hand.push(`h-${drawnCard.rank}-${drawnCard.suit}`);
     }
     setFullDeck(fullDeck.slice(1, fullDeck.length));
@@ -385,6 +383,7 @@ const handleClose = async () =>
 
 
   return (
+    <div className='board'>
     <DndContext onDragEnd={handleDragEnd}>
       <div className='Player'>
         <div className='PlayerDetails'>
@@ -455,6 +454,7 @@ const handleClose = async () =>
         </div>
       
     </DndContext>
+    </div>
   );
   
 };
