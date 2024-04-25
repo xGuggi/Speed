@@ -93,16 +93,16 @@ export default function App() {
     console.log("at the function");
     console.log(p1Draws);
     console.log(p2Draws);
-    if (p1Draws === 0){
+    if (p1Draws === 0) {
       setWinner(1);
       setEmpty(true);
       setTimeout(() => {
         popUpModal();
       }, 5000);
-   
+
       console.log("at player one");
-    } 
-    if (p2Draws === 0){
+    }
+    if (p2Draws === 0) {
       setWinner(2);
       setEmpty(true);
       setTimeout(() => {
@@ -112,15 +112,17 @@ export default function App() {
     }
   };
   useEffect(() => {
-    const checkForWin = () =>{
+    const checkForWin = () => {
       isHandEmpty();
     };
     checkForWin();
   });
 
-  const popUpModal = async () =>
-  {
+  const popUpModal = async () => {
     let cardSend;
+    let loser;
+    if (p1Draws > p2Draws) {
+      let cardSend = p1Draws;
     let loser; 
     if (p1Draws > p2Draws)
     {
@@ -129,14 +131,14 @@ export default function App() {
     }
     else 
     {
-      cardSend = p2Draws; 
+      let cardSend = p2Draws; 
       loser = 2; 
     }
     socket.emit('gameWinCollect', cardSend, loser);
 
     setOpen(true);
   }
-/////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
 
   // Function to handle win condition : don't use this from Joel!!!!
   const checkWinCondition = () => {
@@ -181,15 +183,15 @@ export default function App() {
       }
       return deck;
     };
-  
+
     // Shuffle the full deck
     let localFullDeck = shuffleDeck([...fullDeck]);
-  
+
     // Divide the deck into two equal halves
     const halfDeckSize = Math.ceil(localFullDeck.length / 2);
     const deck1 = localFullDeck.slice(0, halfDeckSize);
     const deck2 = localFullDeck.slice(halfDeckSize);
-  
+
     // Draw initial hands for both players alternately, limiting each player to 5 cards
     let localPlayer1Hand = [];
     let localPlayer2Hand = [];
@@ -199,17 +201,18 @@ export default function App() {
       localPlayer1Hand.push(`h-${drawnCard1.rank}-${drawnCard1.suit}`);
       localPlayer2Hand.push(`h-${drawnCard2.rank}-${drawnCard2.suit}`);
     }
-  
+
+
     // Central piles
     let centerL, centerR;
     do {
       centerL = localFullDeck.shift();
     } while (localPlayer1Hand.includes(`h-${centerL.rank}-${centerL.suit}`) || localPlayer2Hand.includes(`h-${centerL.rank}-${centerL.suit}`));
-  
+
     do {
       centerR = localFullDeck.shift();
-    } while (localPlayer1Hand.includes(`h-${centerR.rank}-${centerR.suit}`) || localPlayer2Hand.includes(`h-${centerR.rank}-${centerR.suit}`));
-  
+    } while (localPlayer1Hand.includes(`h-${centerR.rank}-${centerR.suit}`) || localPlayer2Hand.includes(`h-${centerR.rank}-${centerR.suit}`) || `${centerR.rank}-${centerR.suit}` === `${centerL.rank}-${centerL.suit}`);
+
     // Set the state at the end of all operations
     setFullDeck(localFullDeck);
     setPlayer1Hand(localPlayer1Hand);
@@ -218,8 +221,9 @@ export default function App() {
     setRightPile(`r-${centerR.rank}-${centerR.suit}`);
     socket.emit('initialState', localFullDeck, localPlayer1Hand, localPlayer2Hand, `l-${centerL.rank}-${centerL.suit}`, `r-${centerR.rank}-${centerR.suit}`);
   }, []);
-  
-  const handleStalemate = ()=> {
+
+
+  const handleStalemate = () => {
     const drawnCard = fullDeck[0];
     const drawnCard2 = fullDeck[1];
     setFullDeck(fullDeck.slice(2, fullDeck.length));
@@ -230,7 +234,7 @@ export default function App() {
   }
 
   const handleFinalStalemate = () => {
-    
+
   }
 
   useEffect(() => {
@@ -245,29 +249,29 @@ export default function App() {
 
   //function press button or when we detect a drop event 
 
-    socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile, p1DrawPileSize, p2DrawPileSize) => {
-      console.log("Inside socket new cards");
-      setPlayer1Hand(player1Hand);
-      console.log(player1Hand);
-      setPlayer2Hand(player2Hand);
-      console.log("leftpile" + leftPile);
-      setLeftPile(leftPile);
-      console.log("rightPile" + rightPile);
-      setRightPile(rightPile);
-      setP1DrawPileSize(p1DrawPileSize);
-      setP2DrawPileSize(p2DrawPileSize);
-      SetStateCheck(!stateCheck);
-    });
+  socket.on('newCards', (player1Hand, player2Hand, leftPile, rightPile, p1DrawPileSize, p2DrawPileSize) => {
+    console.log("Inside socket new cards");
+    setPlayer1Hand(player1Hand);
+    console.log(player1Hand);
+    setPlayer2Hand(player2Hand);
+    console.log("leftpile" + leftPile);
+    setLeftPile(leftPile);
+    console.log("rightPile" + rightPile);
+    setRightPile(rightPile);
+    setP1DrawPileSize(p1DrawPileSize);
+    setP2DrawPileSize(p2DrawPileSize);
+    SetStateCheck(!stateCheck);
+  });
 
-    socket.on('newHands', (player1Hand, player2Hand) => {
-      setPlayer1Hand(player1Hand);
-      setPlayer2Hand(player2Hand);
-      SetStateCheck(!stateCheck);
-    });
+  socket.on('newHands', (player1Hand, player2Hand) => {
+    setPlayer1Hand(player1Hand);
+    setPlayer2Hand(player2Hand);
+    SetStateCheck(!stateCheck);
+  });
 
-    // useEffect(() => {
-    //   console.log('Inisde state check useEffect');
-    // })
+  // useEffect(() => {
+  //   console.log('Inisde state check useEffect');
+  // })
 
   socket.on('cards', (shuffledDeck) => {
     setFullDeck(shuffledDeck);
@@ -307,12 +311,12 @@ export default function App() {
       event.over.id.split('-')[0] === "p2l" || event.over.id.split('-')[0] === "p2r") {
       updatedPlayer1Hand = updatedPlayer1Hand.filter(cardid => cardid !== cardID);
       updatedPlayer2Hand = updatedPlayer2Hand.filter(cardid => cardid !== cardID);
-    } 
-    
+    }
+
     if (startP1Handsize > updatedPlayer1Hand.length) {
-      updatedP1DrawPileSize = p1Draws-1;
+      updatedP1DrawPileSize = p1Draws - 1;
     } else if (startP2Handsize > updatedPlayer2Hand.length) {
-      updatedP2DrawPileSize = p2Draws-1;
+      updatedP2DrawPileSize = p2Draws - 1;
     }
 
     const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -358,21 +362,18 @@ export default function App() {
     //socket.emit('updateGameState', { leftPile, rightPile, player1Hand: updatedPlayer1Hand, player2Hand: updatedPlayer2Hand });
     console.log("player1Hand" + player1Hand);
     console.log("p1Draws" + p1Draws);
-    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand, updatedP1DrawPileSize, updatedP2DrawPileSize );
-    }
+    socket.emit('updateGame', updatedLeftPile, updatedRightPile, updatedPlayer1Hand, updatedPlayer2Hand, updatedP1DrawPileSize, updatedP2DrawPileSize);
+  }
 
-const handleClose = async () =>
-{
+  const handleClose = async () => {
     setOpen(false);
-    if (test === true)
-    {
-        setTest(false);
+    if (test === true) {
+      setTest(false);
     }
-    else if (test === false)
-    {
-        setTest(true);
+    else if (test === false) {
+      setTest(true);
     }
-}
+  }
 
 
 
@@ -439,15 +440,15 @@ const handleClose = async () =>
         </div>
       </div>
 
-      <hr/>
+      <hr />
       <button onClick={() => setOpen(true)}>History</button>
-      <Modal open = {open} onClose={handleClose} />
-        <div className="win-message">
-          {empty ? "Player " + winner + " wins!" : ""}
-        </div>
-      
+      <Modal open={open} onClose={handleClose} />
+      <div className="win-message">
+        {empty ? "Player " + winner + " wins!" : ""}
+      </div>
+
     </DndContext>
   );
-  
+
 };
 
